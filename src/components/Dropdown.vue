@@ -4,8 +4,7 @@
         {{ title }}
       </a>
       <ul class="dropdown-menu" v-if="isOpen" :style="{ display: 'block' }" aria-labelledby="dropdownMenuButton1">
-        <li><a class="dropdown-item" href="#">新建文章</a></li>
-        <li><a class="dropdown-item" href="#">编辑资料</a></li>
+        <slot></slot>
       </ul>
   </div>
 </template>
