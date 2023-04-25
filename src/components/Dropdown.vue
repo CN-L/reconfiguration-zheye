@@ -9,8 +9,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, ref, onMounted, onUnmounted } from 'vue'
-
+import { defineComponent, PropType, ref, watch } from 'vue'
+import useClickOutside from '@/hooks/useClickOutside'
 export default defineComponent({
   name: 'dropDown',
   props: {
@@ -25,24 +25,18 @@ export default defineComponent({
       isOpen.value = !isOpen.value
     }
     const dropdownRef = ref<HTMLElement | null>(null) // 联合类型
-    const handler = (e: MouseEvent) => {
-      if (dropdownRef.value) {
-        // 类型断言e.target是个htmlElement类型
-        if (!dropdownRef.value.contains(e.target as HTMLElement) && isOpen) {
-          isOpen.value = false
-        }
+    const isClickOutside = useClickOutside(dropdownRef)
+    // 监听是否点击到了指定元素外
+    watch(isClickOutside, (newVal) => {
+      if (newVal && isOpen.value) {
+        isOpen.value = false
       }
-    }
-    onMounted(() => {
-      document.addEventListener('click', handler)
-    })
-    onUnmounted(() => {
-      document.removeEventListener('click', handler)
     })
     return {
       isOpen,
       toggleOpen,
-      dropdownRef
+      dropdownRef,
+      isClickOutside
     }
   }
 })
