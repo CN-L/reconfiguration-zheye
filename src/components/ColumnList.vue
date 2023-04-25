@@ -14,7 +14,6 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-import 'bootstrap/dist/css/bootstrap.min.css'
 export interface ColumnProps {
   id: number,
   title: string,
