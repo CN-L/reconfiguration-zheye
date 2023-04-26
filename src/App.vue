@@ -5,11 +5,13 @@
     <ValidateForm @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">电子邮箱</label>
+        {{ emailVal }}
         <ValidateInput placeholder="请输入邮箱地址" v-model="emailVal" :rules="emailRules"></ValidateInput>
       </div>
       <div class="mb-3">
         <label class="form-label">密码</label>
-        <ValidateInput ref="inputRef" placeholder="请输入邮箱地址" v-model="passWord" :rules="passwordRules"></ValidateInput>
+        {{ emailVal }}
+        <ValidateInput placeholder="请输入密码" v-model="passWord" :rules="passwordRules"></ValidateInput>
       </div>
       <!-- 等同于v-slot:submit -->
       <template #submit>
@@ -29,7 +31,6 @@ import ValidateForm from '@/components/ValidateForm.vue'
 export default defineComponent({
   name: 'App',
   setup () {
-    const inputRef = ref<any>(null)
     const emailVal = ref('123456@163.com')
     const passWord = ref('123456789l')
     const testData: ColumnProps[] = [
@@ -86,15 +87,12 @@ export default defineComponent({
       { type: 'email', message: '请输入正确的电子邮箱格式' }
     ]
     const onFormSubmit = (result: boolean) => {
-      if (inputRef.value) console.log(inputRef.value.validateInput())
-      console.log(inputRef)
-      console.log(result, '提交结果')
+      console.log(result)
     }
     return {
       testData,
       currentUser,
       passwordRules,
-      inputRef,
       emailRules,
       emailVal,
       passWord,

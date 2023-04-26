@@ -29,11 +29,10 @@ export default defineComponent({
   },
   setup (props, context) {
     onMounted(() => {
-      emitter.emit('form-item-create', '123')
+      emitter.emit('form-item-created', validateInput)
     })
-    console.log(context.attrs)
     const inputRef = reactive({
-      val: '',
+      val: props.modelValue || '',
       error: false,
       message: ''
     })
@@ -74,6 +73,8 @@ export default defineComponent({
         })
         inputRef.error = !allPassed
         return allPassed
+      } else {
+        return true
       }
     }
     return {
