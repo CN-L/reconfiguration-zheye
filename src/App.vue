@@ -4,13 +4,12 @@
     <!-- <ColumnList :list="testData"></ColumnList> -->
     <form>
       <div class="mb-3">
-        {{ inputVal }}
         <label for="exampleInputPassword1" class="form-label">电子邮箱</label>
-        <ValidateInput type="password" placeholder="请输入邮箱地址" v-model="inputVal" :rules="emailRules"></ValidateInput>
+        <ValidateInput placeholder="请输入邮箱地址" v-model="inputVal" :rules="emailRules"></ValidateInput>
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">密码</label>
-        <input type="password" class="form-control" id="exampleInputPassword1">
+        <ValidateInput placeholder="请输入邮箱地址" v-model="inputVal" :rules="passwordRules"></ValidateInput>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
@@ -70,6 +69,11 @@ export default defineComponent({
       name: 'viking',
       isLogin: true
     }
+    const passwordRules: RulesProp = [
+      { type: 'required', message: '密码不能为空' },
+      { type: 'range', min: { message: '你的密码至少包括六位，不能含有空格', length: 6 }, max: { message: '你的密码至不能超过二十位，不能含有空格', length: 20 } }
+    ]
+
     const emailRules: RulesProp = [
       { type: 'required', message: '电子邮箱地址不能为空' },
       { type: 'email', message: '请输入正确的电子邮箱格式' }
@@ -78,6 +82,7 @@ export default defineComponent({
     return {
       testData,
       currentUser,
+      passwordRules,
       inputVal,
       emailRules
     }
