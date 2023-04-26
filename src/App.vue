@@ -2,7 +2,7 @@
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
     <!-- <ColumnList :list="testData"></ColumnList> -->
-    <form>
+    <ValidateForm @form-submit="onFormSubmit">
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">电子邮箱</label>
         <ValidateInput placeholder="请输入邮箱地址" v-model="inputVal" :rules="emailRules"></ValidateInput>
@@ -11,8 +11,11 @@
         <label for="exampleInputPassword1" class="form-label">密码</label>
         <ValidateInput placeholder="请输入邮箱地址" v-model="inputVal" :rules="passwordRules"></ValidateInput>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+      <!-- 等同于v-slot:submit -->
+      <template #submit>
+        <span class="btn btn-danger">submit</span>
+      </template>
+    </ValidateForm>
   </div>
 </template>
 
@@ -22,6 +25,7 @@ import ColumnList, { ColumnProps } from '@/components/ColumnList.vue'
 import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
+import ValidateForm from './components/ValidateForm.vue'
 export default defineComponent({
   name: 'App',
   setup () {
@@ -78,19 +82,24 @@ export default defineComponent({
       { type: 'required', message: '电子邮箱地址不能为空' },
       { type: 'email', message: '请输入正确的电子邮箱格式' }
     ]
+    const onFormSubmit = (result: boolean) => {
+      console.log(result, '提交结果')
+    }
     const inputVal = ref<undefined | string>()
     return {
       testData,
       currentUser,
       passwordRules,
       inputVal,
-      emailRules
+      emailRules,
+      onFormSubmit
     }
   },
   components: {
     ColumnList,
     GlobalHeader,
-    ValidateInput
+    ValidateInput,
+    ValidateForm
   }
 })
 </script>
