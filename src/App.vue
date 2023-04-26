@@ -4,8 +4,9 @@
     <!-- <ColumnList :list="testData"></ColumnList> -->
     <form>
       <div class="mb-3">
+        {{ inputVal }}
         <label for="exampleInputPassword1" class="form-label">电子邮箱</label>
-        <ValidateInput :rules="emailRules"></ValidateInput>
+        <ValidateInput v-model="inputVal" :rules="emailRules"></ValidateInput>
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">密码</label>
@@ -17,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import ColumnList, { ColumnProps } from '@/components/ColumnList.vue'
 import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -73,10 +74,11 @@ export default defineComponent({
       { type: 'required', message: '电子邮箱地址不能为空' },
       { type: 'email', message: '请输入正确的电子邮箱格式' }
     ]
-
+    const inputVal = ref<undefined | string>()
     return {
       testData,
       currentUser,
+      inputVal,
       emailRules
     }
   },
