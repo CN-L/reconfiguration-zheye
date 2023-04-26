@@ -69,7 +69,7 @@ export default defineComponent({
           return passed
         })
         inputRef.error = !allPassed
-        console.log(inputRef.error, '222')
+        return allPassed
       }
     }
     return {

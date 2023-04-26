@@ -4,12 +4,12 @@
     <!-- <ColumnList :list="testData"></ColumnList> -->
     <ValidateForm @form-submit="onFormSubmit">
       <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">电子邮箱</label>
+        <label class="form-label">电子邮箱</label>
         <ValidateInput placeholder="请输入邮箱地址" v-model="inputVal" :rules="emailRules"></ValidateInput>
       </div>
       <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">密码</label>
-        <ValidateInput placeholder="请输入邮箱地址" v-model="inputVal" :rules="passwordRules"></ValidateInput>
+        <label class="form-label">密码</label>
+        <ValidateInput ref="inputRef" placeholder="请输入邮箱地址" v-model="inputVal" :rules="passwordRules"></ValidateInput>
       </div>
       <!-- 等同于v-slot:submit -->
       <template #submit>
@@ -25,10 +25,11 @@ import ColumnList, { ColumnProps } from '@/components/ColumnList.vue'
 import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
-import ValidateForm from './components/ValidateForm.vue'
+import ValidateForm from '@/components/ValidateForm.vue'
 export default defineComponent({
   name: 'App',
   setup () {
+    const inputRef = ref<any>(null)
     const testData: ColumnProps[] = [
       {
         id: 1,
@@ -83,6 +84,8 @@ export default defineComponent({
       { type: 'email', message: '请输入正确的电子邮箱格式' }
     ]
     const onFormSubmit = (result: boolean) => {
+      if (inputRef.value) console.log(inputRef.value.validateInput())
+      console.log(inputRef)
       console.log(result, '提交结果')
     }
     const inputVal = ref<undefined | string>()
@@ -91,6 +94,7 @@ export default defineComponent({
       currentUser,
       passwordRules,
       inputVal,
+      inputRef,
       emailRules,
       onFormSubmit
     }
