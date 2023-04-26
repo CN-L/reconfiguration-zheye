@@ -1,6 +1,6 @@
 <template>
       <div class="mb-3">
-        <input @input="updateVal" :value="inputRef.val" @blur="validateInput" type="email" class="form-control" :class="{'is-invalid': inputRef.error}" id="validationCustomUsername" aria-describedby="emailHelp">
+        <input v-bind="$attrs" @input="updateVal" :value="inputRef.val" @blur="validateInput" class="form-control" :class="{'is-invalid': inputRef.error}" aria-describedby="emailHelp">
         <div class="form-text invalid-feedback" v-if="inputRef.error">{{ inputRef.message }}</div>
       </div>
 </template>
@@ -14,18 +14,20 @@ interface RuleProp {
 }
 export type RulesProp = RuleProp[]
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     rules: Array as PropType<RulesProp>,
     modelValue: String as PropType<string>
 
   },
   setup (props, context) {
+    console.log(context.attrs)
     const inputRef = reactive({
       val: '',
       error: false,
       message: ''
     })
-    const updateVal = (e: KeyboardEvent) => {
+    const updateVal = (e: Event) => {
       const targetVal = (e.target as HTMLInputElement).value
       inputRef.val = targetVal
       context.emit('update:modelValue', targetVal)

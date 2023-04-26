@@ -6,7 +6,7 @@
       <div class="mb-3">
         {{ inputVal }}
         <label for="exampleInputPassword1" class="form-label">电子邮箱</label>
-        <ValidateInput v-model="inputVal" :rules="emailRules"></ValidateInput>
+        <ValidateInput type="password" placeholder="请输入邮箱地址" v-model="inputVal" :rules="emailRules"></ValidateInput>
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">密码</label>
@@ -91,6 +91,4 @@ export default defineComponent({
 </script>
 
 <style>
-#app {
-}
 </style>
