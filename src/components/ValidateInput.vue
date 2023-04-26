@@ -5,7 +5,8 @@
       </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, PropType } from 'vue'
+import { defineComponent, reactive, PropType, onMounted } from 'vue'
+import { emitter } from '@/components/ValidateForm.vue'
 // 正则表达式
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 interface RangeProp {
@@ -27,6 +28,9 @@ export default defineComponent({
 
   },
   setup (props, context) {
+    onMounted(() => {
+      emitter.emit('form-item-create', '123')
+    })
     console.log(context.attrs)
     const inputRef = reactive({
       val: '',

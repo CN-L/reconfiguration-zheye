@@ -5,11 +5,11 @@
     <ValidateForm @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">电子邮箱</label>
-        <ValidateInput placeholder="请输入邮箱地址" v-model="inputVal" :rules="emailRules"></ValidateInput>
+        <ValidateInput placeholder="请输入邮箱地址" v-model="emailVal" :rules="emailRules"></ValidateInput>
       </div>
       <div class="mb-3">
         <label class="form-label">密码</label>
-        <ValidateInput ref="inputRef" placeholder="请输入邮箱地址" v-model="inputVal" :rules="passwordRules"></ValidateInput>
+        <ValidateInput ref="inputRef" placeholder="请输入邮箱地址" v-model="passWord" :rules="passwordRules"></ValidateInput>
       </div>
       <!-- 等同于v-slot:submit -->
       <template #submit>
@@ -30,6 +30,8 @@ export default defineComponent({
   name: 'App',
   setup () {
     const inputRef = ref<any>(null)
+    const emailVal = ref('123456@163.com')
+    const passWord = ref('123456789l')
     const testData: ColumnProps[] = [
       {
         id: 1,
@@ -88,14 +90,14 @@ export default defineComponent({
       console.log(inputRef)
       console.log(result, '提交结果')
     }
-    const inputVal = ref<undefined | string>()
     return {
       testData,
       currentUser,
       passwordRules,
-      inputVal,
       inputRef,
       emailRules,
+      emailVal,
+      passWord,
       onFormSubmit
     }
   },
