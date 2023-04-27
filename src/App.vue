@@ -2,15 +2,13 @@
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
     <!-- <ColumnList :list="testData"></ColumnList> -->
-    <ValidateForm @form-submit="onFormSubmit">
+    <ValidateForm @form-submit="onFormSubmit" @clear-inputs="onClear">
       <div class="mb-3">
         <label class="form-label">电子邮箱</label>
-        {{ emailVal }}
         <ValidateInput placeholder="请输入邮箱地址" v-model="emailVal" :rules="emailRules"></ValidateInput>
       </div>
       <div class="mb-3">
         <label class="form-label">密码</label>
-        {{ emailVal }}
         <ValidateInput placeholder="请输入密码" v-model="passWord" :rules="passwordRules"></ValidateInput>
       </div>
       <!-- 等同于v-slot:submit -->
@@ -87,7 +85,12 @@ export default defineComponent({
       { type: 'email', message: '请输入正确的电子邮箱格式' }
     ]
     const onFormSubmit = (result: boolean) => {
-      console.log(result)
+      if (result) {
+        onClear()
+      }
+    }
+    const onClear = () => {
+      console.log('清空input')
     }
     return {
       testData,
@@ -96,6 +99,7 @@ export default defineComponent({
       emailRules,
       emailVal,
       passWord,
+      onClear,
       onFormSubmit
     }
   },

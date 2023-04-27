@@ -13,27 +13,41 @@
 import { defineComponent, onUnmounted } from 'vue'
 import mitt from 'mitt'
 type ValidateFunc = () => boolean
+type clearAllFunc = () => void
 type Events = {
-  'form-item-created': ValidateFunc
+  'form-item-created': ValidateFunc,
+  'form-item-clear': () => void
 }
 export const emitter = mitt<Events>()
 export default defineComponent({
-  emits: ['form-submit'],
+  emits: ['form-submit', 'clear-inputs'],
   setup (props, context) {
     let funcArray: ValidateFunc[] = []
+    let clearArray: clearAllFunc[] = []
+    const clearInputs = () => {
+      clearArray.map(item => item())
+    }
     const submitForm = () => {
       const result = funcArray.map(func => func()).every((item) => item)
+      if (result) clearInputs()
       context.emit('form-submit', result)
     }
     const callBack = (func: ValidateFunc) => {
       funcArray.push(func)
     }
+    // 清空input函数集合
+    const clearAllBack = (func: clearAllFunc) => {
+      clearArray.push(func)
+    }
     // 注册事件form-item-created
     emitter.on('form-item-created', callBack)
+    emitter.on('form-item-clear', clearAllBack)
     onUnmounted(() => {
       // 移除注销此事件
       emitter.off('form-item-created', callBack)
+      emitter.off('form-item-clear', clearAllBack)
       funcArray = []
+      clearArray = []
     })
     return {
       submitForm

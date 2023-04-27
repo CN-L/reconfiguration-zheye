@@ -30,7 +30,11 @@ export default defineComponent({
   setup (props, context) {
     onMounted(() => {
       emitter.emit('form-item-created', validateInput)
+      emitter.emit('form-item-clear', clearItemInput)
     })
+    const clearItemInput = () => {
+      inputRef.val = ''
+    }
     const inputRef = reactive({
       val: props.modelValue || '',
       error: false,
