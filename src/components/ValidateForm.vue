@@ -20,7 +20,7 @@ type Events = {
 }
 export const emitter = mitt<Events>()
 export default defineComponent({
-  emits: ['form-submit', 'clear-inputs'],
+  emits: ['form-submit'],
   setup (props, context) {
     let funcArray: ValidateFunc[] = []
     let clearArray: clearAllFunc[] = []
