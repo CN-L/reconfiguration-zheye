@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
-    <home></home>
-    <login></login>
+    <router-view></router-view>
     <GlobalFooter></GlobalFooter>
   </div>
 </template>
@@ -10,8 +9,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
-import Home from '@/views/Home.vue'
-import Login from '@/views/Login.vue'
 import GlobalFooter from '@/components/GlobalFooter.vue'
 export default defineComponent({
   name: 'App',
@@ -33,9 +30,7 @@ export default defineComponent({
   },
   components: {
     GlobalHeader,
-    GlobalFooter,
-    Login,
-    Home
+    GlobalFooter
   }
 })
 </script>
