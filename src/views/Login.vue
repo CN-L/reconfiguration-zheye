@@ -19,6 +19,7 @@ import { defineComponent, ref } from 'vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import { useRouter } from 'vue-router'
+import store from '@/store/store'
 export default defineComponent({
   name: 'loginView',
   setup () {
@@ -41,7 +42,8 @@ export default defineComponent({
     const onFormSubmit = (result: boolean) => {
       if (result) {
         onClear()
-        router.push({ name: 'column', params: { id: 1 } })
+        router.push({ path: '/' })
+        store.commit('login')
       }
     }
     return {

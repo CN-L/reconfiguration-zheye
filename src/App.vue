@@ -7,24 +7,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
+import { computed, defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
+import GlobalHeader from '@/components/GlobalHeader.vue'
 import GlobalFooter from '@/components/GlobalFooter.vue'
 export default defineComponent({
   name: 'App',
   setup () {
-    const emailVal = ref('123456@163.com')
-    const passWord = ref('123456789l')
-
-    const currentUser: UserProps = {
-      id: 1,
-      name: 'viking',
-      isLogin: true
-    }
+    const store = useStore()
+    const currentUser = computed(() => store.state.user)
     return {
-      currentUser,
-      emailVal,
-      passWord
+      currentUser
 
     }
   },

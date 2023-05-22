@@ -12,18 +12,22 @@
       </div>
     </section>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
-    <ColumnList :list="testData"></ColumnList>
+    <ColumnList :list="list"></ColumnList>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import ColumnList from '@/components/ColumnList.vue'
 import { testData } from '@/testData'
+import { useStore } from 'vuex'
+import { GlobalDataProps } from '@/store/store'
 export default defineComponent({
   name: 'homeView',
   setup () {
+    const store = useStore<GlobalDataProps>()
+    const list = computed(() => store.state.columns)
     return {
-      testData
+      list
     }
   },
   components: {
