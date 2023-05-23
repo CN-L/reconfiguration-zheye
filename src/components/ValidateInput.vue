@@ -1,6 +1,7 @@
 <template>
       <div class="mb-3">
-        <input v-bind="$attrs" @input="updateVal" :value="inputRef.val" @blur="validateInput" class="form-control" :class="{'is-invalid': inputRef.error}" aria-describedby="emailHelp">
+        <input v-if="tag !== 'textarea'" v-bind="$attrs" @input="updateVal" :value="inputRef.val" @blur="validateInput" class="form-control" :class="{'is-invalid': inputRef.error}" aria-describedby="emailHelp">
+        <textarea v-else :value="inputRef.val" :class="{'is-invalid': inputRef.error}" @blur="validateInput" @input="updateVal" cols="30" rows="5" v-bind="$attrs" aria-describedby="emailHelp"></textarea>
         <div class="form-text invalid-feedback" v-if="inputRef.error">{{ inputRef.message }}</div>
       </div>
 </template>
@@ -13,6 +14,8 @@ interface RangeProp {
   message: string,
   length: number
 }
+export type TagType = 'input' | 'textarea'
+
 interface RuleProp {
   type: 'required' | 'email' | 'range', // 字面量
   message?: string,
@@ -24,8 +27,11 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     rules: Array as PropType<RulesProp>,
-    modelValue: String as PropType<string>
-
+    modelValue: String as PropType<string>,
+    tag: {
+      type: String as PropType<TagType>,
+      default: 'input'
+    }
   },
   setup (props, context) {
     onMounted(() => {
