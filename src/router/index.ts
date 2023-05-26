@@ -1,4 +1,5 @@
 // import { defineAsyncComponent } from 'vue'
+import store from '@/store/store'
 import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(),
@@ -11,6 +12,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
+      meta: { redirectAleadyLogin: true },
       component: () => import('@/views/Login.vue')
     },
     {
@@ -21,8 +23,18 @@ const router = createRouter({
     {
       path: '/create',
       name: 'create',
+      meta: { requiredLogin: true },
       component: () => import('@/views/CreatePost.vue')
     }
   ]
+})
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiredLogin && !store.state.user.isLogin) {
+    next({ name: 'login' })
+  } else if (to.meta.redirectAleadyLogin && store.state.user.isLogin) {
+    next('/')
+  } else {
+    next()
+  }
 })
 export default router
