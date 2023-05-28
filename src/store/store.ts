@@ -59,7 +59,7 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
 }
 const store = createStore<GlobalDataProps>({
   state: {
-    token: '',
+    token: localStorage.getItem('token') || '',
     loading: false,
     columns: [],
     posts: [],
@@ -92,6 +92,7 @@ const store = createStore<GlobalDataProps>({
     login (state, rawData) {
       const { token } = rawData.data
       state.token = token
+      localStorage.setItem('token', JSON.parse(JSON.stringify(token)))
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
     }
   },
@@ -112,6 +113,7 @@ const store = createStore<GlobalDataProps>({
     async fetchPosts (context, cid) {
       getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', context.commit)
     },
+    // 组合登陆和获取当前用户信息的acions
     loginAndFetch ({ dispatch }, playLoad) {
       return dispatch('login', playLoad).then(() =>
         dispatch('fetchCurrentUser')
