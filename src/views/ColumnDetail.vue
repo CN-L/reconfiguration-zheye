@@ -2,7 +2,7 @@
 <div class="column-detail-page w-75 mx-auto">
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center" v-if="column">
       <div class="col-3 text-center">
-        <img :src="column.avatar" :alt="column.title" class="rounded-circle border w-100">
+        <img v-if="!!column.avatar" :src="column.avatar?.url" :alt="column.title" class="rounded-circle border w-100">
       </div>
       <div class="col-9">
         <h4>{{column.title}}</h4>
@@ -13,18 +13,33 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { testData, PostProps } from '@/testData'
 import { useStore } from 'vuex'
 import PostList from '@/components/PostList.vue'
+import { ColumnProps } from '@/store/store'
 export default defineComponent({
   setup () {
     const store = useStore()
     const router = useRouter()
     const route = useRoute()
-    const currentId = +route.params.id
-    const column = computed(() => store.getters.getColumnById(currentId))
+    const currentId = route.params.id
+    onMounted(() => {
+      store.dispatch('fetchColumn', currentId)
+      store.dispatch('fetchPosts', currentId)
+    })
+    const column = computed(() => {
+      const storeNew = store.getters.getColumnById(currentId) as ColumnProps | undefined
+      if (storeNew && !storeNew.avatar) {
+        storeNew.avatar = {
+          url: require('@/assets/colmun.webp')
+        }
+      } else if (storeNew && storeNew.avatar) {
+        storeNew.avatar.url = storeNew.avatar.url + '?x-oss-process=image/resize,m_fixed,h_50,w_50'
+      }
+      return storeNew
+    })
+    // const column = computed(() => store.getters.getColumnById(currentId))
     const list = computed(() => store.getters.getPostsByCid(currentId))
     return {
       router,

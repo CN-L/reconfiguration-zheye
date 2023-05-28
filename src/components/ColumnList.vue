@@ -6,7 +6,7 @@
           <img class="rounded-circle border border-light my-3" :src="column.avatar?.url" :alt="column.title">
           <h5 class="card-title">{{ column.title }}</h5>
           <p class="card-text text-left">{{ column.description }}</p>
-          <router-link :to="{name: 'column', params: { id: 1}}" class="btn btn-outline-primary">进入专栏</router-link>
+          <router-link :to="{name: 'column', params: { id: column._id}}" class="btn btn-outline-primary">进入专栏</router-link>
         </div>
       </div>
     </div>
@@ -27,7 +27,6 @@ export default defineComponent({
       return props.list.map(item => {
         if (!item.avatar) {
           item.avatar = {
-            // ...item,
             url: require('@/assets/colmun.webp')
           }
         } else {

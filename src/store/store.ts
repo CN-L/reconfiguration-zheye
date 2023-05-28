@@ -7,24 +7,37 @@ interface Iuser {
   id?: number,
   columnId?: number
 }
-export interface PostProps {
-  id: number;
-  title: string;
-  content: string;
-  image?: string;
-  createdAt: string;
-  columnId: number;
+export interface ImageProps {
+  _id?: string;
+  url?: string;
+  createdAt?: string;
+  fitUrl?: string;
 }
-interface ImageProps {
-  _id?: string,
-  url?: string,
-  createdAt?: string
+export interface UserProps {
+  isLogin: boolean;
+  nickName?: string;
+  _id?: string;
+  column?: string;
+  email?: string;
+  avatar?: ImageProps;
+  description?: string;
+}
+export interface PostProps {
+  _id?: string;
+  title: string;
+  excerpt?: string;
+  content?: string;
+  image?: ImageProps | string;
+  createdAt?: string;
+  column: string;
+  author?: string | UserProps;
+  isHTML?: boolean;
 }
 export interface ColumnProps {
-  _id: number,
-  title: string,
-  avatar?: ImageProps,
-  description: string
+  _id: string;
+  title: string;
+  avatar?: ImageProps;
+  description: string;
 }
 export interface GlobalDataProps {
   columns: ColumnProps[],
@@ -34,7 +47,7 @@ export interface GlobalDataProps {
 const store = createStore<GlobalDataProps>({
   state: {
     columns: [],
-    posts: testPosts,
+    posts: [],
     user: {
       isLogin: false
     }
@@ -48,6 +61,12 @@ const store = createStore<GlobalDataProps>({
     },
     fetchColumns (state, rowData) {
       state.columns = rowData.data.list
+    },
+    fetchColumn (state, rowData) {
+      state.columns = [rowData.data]
+    },
+    fetchPosts (state, rowData) {
+      state.posts = rowData.data.list
     }
   },
   actions: {
@@ -55,12 +74,22 @@ const store = createStore<GlobalDataProps>({
       axios.get('/columns').then(resp => {
         context.commit('fetchColumns', resp.data)
       })
+    },
+    fetchColumn (context, cid) {
+      console.log(cid, '2222')
+      axios.get(`/columns/${cid}`).then(resp => {
+        context.commit('fetchColumn', resp.data)
+      })
+    },
+    fetchPosts (context, cid) {
+      axios.get(`/columns/${cid}/posts`).then(resp => {
+        context.commit('fetchPosts', resp.data)
+      })
     }
   },
   getters: {
-    biggerColumnlen: (state) => state.columns.filter(c => c._id > 2).length,
-    getColumnById: (state) => (id: number) => state.columns.find(c => c._id === id),
-    getPostsByCid: state => (cid: number) => state.posts.filter(post => post.columnId === cid)
+    getColumnById: (state) => (id: string) => state.columns.find(c => c._id === id),
+    getPostsByCid: state => (cid: string) => state.posts.filter(post => post._id === cid)
   }
 })
 export default store

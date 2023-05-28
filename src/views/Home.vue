@@ -1,6 +1,5 @@
 <template>
   <div class="home-page">
-    <h2>{{biggerColumnlen}}</h2>
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg col-md-8 mx-auto">
@@ -26,13 +25,11 @@ export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const list = computed(() => store.state.columns)
-    const biggerColumnlen = computed(() => store.getters.biggerColumnlen)
     onMounted(() => {
       store.dispatch('fetchColumns')
     })
     return {
-      list,
-      biggerColumnlen
+      list
     }
   },
   components: {
