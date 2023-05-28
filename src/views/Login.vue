@@ -24,8 +24,8 @@ export default defineComponent({
   name: 'loginView',
   setup () {
     const router = useRouter()
-    const emailVal = ref('123456@163.com')
-    const passWord = ref('123456789l')
+    const emailVal = ref('111@test.com')
+    const passWord = ref('111111')
 
     const passwordRules: RulesProp = [
       { type: 'required', message: '密码不能为空' },
@@ -40,11 +40,16 @@ export default defineComponent({
       console.log('清空input')
     }
     const onFormSubmit = (result: boolean) => {
-      if (result) {
+      if (!result) return // 验证不通过返回
+      const form = {
+        email: emailVal.value,
+        password: passWord.value
+      }
+      store.dispatch('login', form).then(res => {
+        console.log(res, '拿到的数据')
         onClear()
         router.push({ path: '/' })
-        store.commit('login')
-      }
+      })
     }
     return {
       emailVal,

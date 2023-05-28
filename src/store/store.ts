@@ -40,20 +40,24 @@ export interface ColumnProps {
   description: string;
 }
 export interface GlobalDataProps {
+  token: string,
   loading: boolean,
   columns: ColumnProps[],
   posts: PostProps[],
   user: Iuser
 }
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
-  // commit('setLoading', true)
-  // await new Promise(resolve => setTimeout(resolve, 3000))
   const { data } = await axios.get(url)
   commit(mutationName, data)
-  // commit('setLoading', false)
+}
+const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+  const { data } = await axios.post(url, payload)
+  commit(mutationName, data)
+  return data
 }
 const store = createStore<GlobalDataProps>({
   state: {
+    token: '',
     loading: false,
     columns: [],
     posts: [],
@@ -64,9 +68,6 @@ const store = createStore<GlobalDataProps>({
   mutations: {
     setLoading (state, status) {
       state.loading = status
-    },
-    login (state) {
-      state.user = { ...state.user, isLogin: true, name: 'Job', columnId: 1 }
     },
     createPost (state, newpost) {
       state.posts.push(newpost)
@@ -79,25 +80,24 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPosts (state, rowData) {
       state.posts = rowData.data.list
+    },
+    login (state, rawData) {
+      state.token = rawData.data.token
     }
   },
   actions: {
+    login ({ commit }, playLoad) {
+      return postAndCommit('/user/login', 'login', commit, playLoad)
+    },
 
     async fetchColumns (context) {
       getAndCommit('/columns', 'fetchColumns', context.commit)
-      // const { data } = await axios.get('/columns')
-      // context.commit('fetchColumns', data)
     },
     async fetchColumn (context, cid) {
       getAndCommit(`/columns/${cid}`, 'fetchColumn', context.commit)
-      // const { data } = await axios.get(`/columns/${cid}`)
-      // context.commit('fetchColumn', data)
     },
     async fetchPosts (context, cid) {
       getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', context.commit)
-      // const { data } = await axios.get(`/columns/${cid}/posts`)
-
-      // context.commit('fetchPosts', data)
     }
   },
   getters: {
