@@ -39,7 +39,6 @@ export default defineComponent({
       }
       return storeNew
     })
-    // const column = computed(() => store.getters.getColumnById(currentId))
     const list = computed(() => store.getters.getPostsByCid(currentId))
     return {
       router,
