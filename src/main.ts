@@ -10,6 +10,7 @@ axios.defaults.baseURL = 'http://apis.imooc.com/api/'
 // Add a request interceptor
 const icode = '4CB97C9D7FB84B63'
 axios.interceptors.request.use(function (config) {
+  store.commit('setLoading', true)
   config.params = { ...config.params, icode }
   if (config.data instanceof FormData) {
     config.data.append('icode', icode)
@@ -22,7 +23,10 @@ axios.interceptors.request.use(function (config) {
   // Do something with request error
   return Promise.reject(error)
 })
-
+axios.interceptors.response.use(config => {
+  store.commit('setLoading', false)
+  return config
+})
 const app = createApp(App)
 app.use(store)
 app.use(router)

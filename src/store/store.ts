@@ -40,16 +40,21 @@ export interface ColumnProps {
   description: string;
 }
 export interface GlobalDataProps {
+  loading: boolean,
   columns: ColumnProps[],
   posts: PostProps[],
   user: Iuser
 }
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
+  // commit('setLoading', true)
+  // await new Promise(resolve => setTimeout(resolve, 3000))
   const { data } = await axios.get(url)
   commit(mutationName, data)
+  // commit('setLoading', false)
 }
 const store = createStore<GlobalDataProps>({
   state: {
+    loading: false,
     columns: [],
     posts: [],
     user: {
@@ -57,6 +62,9 @@ const store = createStore<GlobalDataProps>({
     }
   },
   mutations: {
+    setLoading (state, status) {
+      state.loading = status
+    },
     login (state) {
       state.user = { ...state.user, isLogin: true, name: 'Job', columnId: 1 }
     },
