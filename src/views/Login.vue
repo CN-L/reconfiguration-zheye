@@ -49,7 +49,7 @@ export default defineComponent({
         console.log(res, '2222222')
         onClear()
         router.push({ path: '/' })
-      })
+      }).catch(error => console.log(error))
     }
     return {
       emailVal,

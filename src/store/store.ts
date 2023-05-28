@@ -8,6 +8,10 @@ export interface Iuser {
   column?: number,
   email?: string
 }
+export interface GlobalErrorProps {
+  status: boolean,
+  message?: string
+}
 export interface ImageProps {
   _id?: string;
   url?: string;
@@ -41,11 +45,12 @@ export interface ColumnProps {
   description: string;
 }
 export interface GlobalDataProps {
+  error: GlobalErrorProps,
   token: string,
   loading: boolean,
   columns: ColumnProps[],
   posts: PostProps[],
-  user: Iuser
+  user: UserProps
 }
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
   const { data } = await axios.get(url)
@@ -59,6 +64,9 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
 }
 const store = createStore<GlobalDataProps>({
   state: {
+    error: {
+      status: false
+    },
     token: localStorage.getItem('token') || '',
     loading: false,
     columns: [],
@@ -68,6 +76,9 @@ const store = createStore<GlobalDataProps>({
     }
   },
   mutations: {
+    setError (state, e: GlobalErrorProps) {
+      state.error = e
+    },
     setLoading (state, status) {
       state.loading = status
     },
