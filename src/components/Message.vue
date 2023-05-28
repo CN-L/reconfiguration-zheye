@@ -1,16 +1,16 @@
 <template>
   <teleport to="#message">
-    <div v-if="isVisible" :class="classObject" class="alert message-info fixed-top w-50 mx-auto d-flex justify-content-between mt-2">
+    <div class="alert message-info fixed-top w-50 mx-auto d-flex justify-content-between mt-2"
+      :class="classObject" v-if="isVisible">
       <span>{{message}}</span>
-      <button type="button" class="close" aria-label="Close" @click.prevent="hide">
-          <span aria-hidden="true">&times;</span>
-        </button>
-   </div>
+      <button type="button" class="btn-close" aria-label="Close"></button>
+    </div>
   </teleport>
 </template>
+
 <script lang="ts">
-import { defineComponent, PropType, ref, onUnmounted } from 'vue'
-import useDomCreate from '@/hooks/useDomCreate'
+import { defineComponent, PropType, ref } from 'vue'
+import useDOMCreate from '@/hooks/useDomCreate'
 export type MessageType = 'success' | 'error' | 'default'
 export default defineComponent({
   name: 'fjw-sqj',
@@ -22,23 +22,24 @@ export default defineComponent({
     }
   },
   emits: ['close-message'],
-  setup (props, contxt) {
-    useDomCreate('message') // 创建dom
+  setup (props, context) {
+    useDOMCreate('message')
     const isVisible = ref(true)
-    const hide = () => {
-      isVisible.value = false
-      contxt.emit('close-message', true)
-    }
     const classObject = {
-      'alert-scuccess': props.type === 'success',
+      'alert-success': props.type === 'success',
       'alert-danger': props.type === 'error',
       'alert-primary': props.type === 'default'
     }
+    const hide = () => {
+      isVisible.value = false
+      context.emit('close-message', true)
+    }
     return {
-      hide,
+      classObject,
       isVisible,
-      classObject
+      hide
     }
   }
 })
+
 </script>

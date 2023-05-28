@@ -20,6 +20,7 @@ import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import { useRouter } from 'vue-router'
 import store from '@/store/store'
+import createdMessage from '@/hooks/createMessage'
 export default defineComponent({
   name: 'loginView',
   setup () {
@@ -47,7 +48,10 @@ export default defineComponent({
       }
       store.dispatch('loginAndFetch', form).then(res => {
         onClear()
-        router.push({ path: '/' })
+        createdMessage('登陆成功后2秒内跳转首页', 'success')
+        setTimeout(() => {
+          router.push({ path: '/' })
+        }, 2000)
       }).catch(error => console.log(error))
     }
     return {
