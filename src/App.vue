@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
-    <Loader v-if="!isLoading"></Loader>
+    <Loader v-if="isLoading"></Loader>
     <router-view></router-view>
     <GlobalFooter></GlobalFooter>
   </div>

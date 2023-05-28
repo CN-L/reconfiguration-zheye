@@ -1,5 +1,6 @@
 <template>
-  <div :style="{backgroundColor: background || ''}" class="d-flex justify-content-center align-items-center h-100 w-100 loading-container">
+  <teleport to="#back1">
+    <div :style="{backgroundColor: background || ''}" class="d-flex justify-content-center align-items-center h-100 w-100 loading-container">
     <div class="loading-content">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">{{ text || 'loading' }}</span>
@@ -7,10 +8,11 @@
       <p v-if="text" class="text-primary small">{{text}}</p>
     </div>
   </div>
+  </teleport>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onUnmounted } from 'vue'
 
 export default defineComponent({
   name: 'my-loader',
@@ -23,6 +25,12 @@ export default defineComponent({
     }
   },
   setup () {
+    const divRef = document.createElement('div')
+    divRef.id = 'back1'
+    document.body.append(divRef)
+    onUnmounted(() => {
+      divRef.remove()
+    })
     return {
 
     }
