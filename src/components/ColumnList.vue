@@ -1,9 +1,9 @@
 <template>
   <div class="row">
-    <div class="col-4 mb-4" v-for="column in ColumnList" :key="column.id">
+    <div class="col-4 mb-4" v-for="column in ColumnList" :key="column._id">
       <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
-          <img class="rounded-circle border border-light w-25 my-3" :src="column.avatar" :alt="column.title">
+          <img class="rounded-circle border border-light my-3" :src="column.avatar?.url" :alt="column.title">
           <h5 class="card-title">{{ column.title }}</h5>
           <p class="card-text text-left">{{ column.description }}</p>
           <router-link :to="{name: 'column', params: { id: 1}}" class="btn btn-outline-primary">进入专栏</router-link>
@@ -14,7 +14,7 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-import { ColumnProps } from '@/testData'
+import { ColumnProps } from '@/store/store'
 export default defineComponent({
   props: {
     list: {
@@ -26,7 +26,12 @@ export default defineComponent({
     const ColumnList = computed(() => {
       return props.list.map(item => {
         if (!item.avatar) {
-          item.avatar = require('@/assets/colmun.webp')
+          item.avatar = {
+            // ...item,
+            url: require('@/assets/colmun.webp')
+          }
+        } else {
+          item.avatar.url = item.avatar.url + '?x-oss-process=image/resize,m_fixed,h_50,w_50'
         }
         return item
       })
@@ -37,3 +42,9 @@ export default defineComponent({
   }
 })
 </script>
+<style scoped>
+.card-body img {
+  width: 50px;
+  height: 50px;
+}
+</style>
