@@ -45,8 +45,8 @@ export default defineComponent({
         email: emailVal.value,
         password: passWord.value
       }
-      store.dispatch('login', form).then(res => {
-        console.log(res, '拿到的数据')
+      store.dispatch('loginAndFetch', form).then(res => {
+        console.log(res, '2222222')
         onClear()
         router.push({ path: '/' })
       })

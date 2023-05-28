@@ -7,7 +7,7 @@
     </ul>
     <ul v-else class="list-inline mb-0">
       <li class="list-inline-item">
-        <Dropdown :title="`你好，${user.name}`">
+        <Dropdown :title="`你好，${user.nickName}`">
         <DropdownItem>
           <a href="#" class="dropdown-item">新建文章</a>
         </DropdownItem>
@@ -27,11 +27,7 @@
 import { defineComponent, PropType } from 'vue'
 import Dropdown from '@/components/Dropdown.vue'
 import DropdownItem from '@/components/DropdownItem.vue'
-export interface UserProps {
-  isLogin: boolean,
-  name?: string,
-  id?: number
-}
+import { UserProps } from '@/store/store'
 export default defineComponent({
   props: {
     user: {
