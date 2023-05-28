@@ -46,7 +46,6 @@ export default defineComponent({
         password: passWord.value
       }
       store.dispatch('loginAndFetch', form).then(res => {
-        console.log(res, '2222222')
         onClear()
         router.push({ path: '/' })
       }).catch(error => console.log(error))

@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
-    <h1>{{ error.message }}</h1>
     <Loader v-if="isLoading"></Loader>
+    <Message v-if="error.status" :message="error.message" type="error"></Message>
     <router-view></router-view>
     <GlobalFooter></GlobalFooter>
   </div>
@@ -16,6 +16,7 @@ import GlobalFooter from '@/components/GlobalFooter.vue'
 import Loader from './components/Loader.vue'
 import axios from 'axios'
 import { GlobalDataProps } from './store/store'
+import Message from './components/Message.vue'
 export default defineComponent({
   name: 'App',
   setup () {
@@ -38,6 +39,7 @@ export default defineComponent({
   },
   components: {
     Loader,
+    Message,
     GlobalHeader,
     GlobalFooter
   }
