@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
+    <Vnode msg="我是你爹"></Vnode>
     <router-view></router-view>
     <GlobalFooter></GlobalFooter>
   </div>
@@ -15,6 +16,7 @@ import Loader from './components/Loader.vue'
 import axios from 'axios'
 import { GlobalDataProps } from './store/store'
 import createdMessage from '@/hooks/createMessage'
+import Vnode from './components/Vnode'
 export default defineComponent({
   name: 'App',
   setup () {
@@ -42,6 +44,7 @@ export default defineComponent({
     }
   },
   components: {
+    Vnode,
     Loader,
     GlobalHeader,
     GlobalFooter

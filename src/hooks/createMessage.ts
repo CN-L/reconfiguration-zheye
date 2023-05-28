@@ -1,5 +1,5 @@
 import Message from '@/components/Message.vue'
-import { render, createApp } from 'vue'
+import { createApp } from 'vue'
 export type MessageType = 'success' | 'error' | 'default'
 const createdMessage = (message: string, type: MessageType, timeOut = 2000) => {
   const messageInstance = createApp(Message, {
