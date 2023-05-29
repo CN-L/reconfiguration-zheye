@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
-    <Vnode msg="我是你爹"></Vnode>
+    <Vnode1 msg="我是你爹"></Vnode1>
     <router-view></router-view>
     <GlobalFooter></GlobalFooter>
   </div>
@@ -16,7 +16,7 @@ import Loader from './components/Loader.vue'
 import axios from 'axios'
 import { GlobalDataProps } from './store/store'
 import createdMessage from '@/hooks/createMessage'
-import Vnode from './components/Vnode'
+import Vnode1 from '@/components/Vnode'
 export default defineComponent({
   name: 'App',
   setup () {
@@ -32,6 +32,10 @@ export default defineComponent({
       }
     })
     onMounted(() => {
+      const message = createdMessage('check me', 'success')
+      setTimeout(() => {
+        message.destory()
+      }, 2000)
       if (!currentUser.value.isLogin && token.value) {
         axios.defaults.headers.common.Authorization = `Bearer ${token.value}`
         store.dispatch('fetchCurrentUser')
@@ -44,7 +48,7 @@ export default defineComponent({
     }
   },
   components: {
-    Vnode,
+    Vnode1,
     Loader,
     GlobalHeader,
     GlobalFooter
