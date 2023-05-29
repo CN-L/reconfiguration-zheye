@@ -17,10 +17,11 @@ interface RangeProp {
 export type TagType = 'input' | 'textarea'
 
 interface RuleProp {
-  type: 'required' | 'email' | 'range', // 字面量
+  type: 'required' | 'email' | 'range' | 'custom', // 字面量
   message?: string,
   min?: RangeProp,
-  max?: RangeProp
+  max?: RangeProp,
+  validator?: () => boolean
 }
 export type RulesProp = RuleProp[]
 export default defineComponent({
@@ -62,6 +63,9 @@ export default defineComponent({
               break
             case 'email':
               passed = emailReg.test(inputRef.val)
+              break
+            case 'custom':
+              passed = rule.validator ? rule.validator() : true
               break
             case 'range':
               // 最小数
