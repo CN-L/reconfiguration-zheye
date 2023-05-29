@@ -9,13 +9,13 @@
       <li class="list-inline-item">
         <Dropdown :title="`你好，${user.nickName}`">
         <DropdownItem>
-          <a href="#" class="dropdown-item">新建文章</a>
+          <router-link class="dropdown-item" :to="{name: 'create'}">新建文章</router-link>
         </DropdownItem>
         <DropdownItem>
           <a href="#" class="dropdown-item">编辑资料</a>
         </DropdownItem>
         <DropdownItem>
-          <a href="#" class="dropdown-item">退出登陆</a>
+          <a href="#" @click="setOut" class="dropdown-item">退出登陆</a>
         </DropdownItem>
 
       </Dropdown>
@@ -28,6 +28,8 @@ import { defineComponent, PropType } from 'vue'
 import Dropdown from '@/components/Dropdown.vue'
 import DropdownItem from '@/components/DropdownItem.vue'
 import { UserProps } from '@/store/store'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 export default defineComponent({
   props: {
     user: {
@@ -36,7 +38,14 @@ export default defineComponent({
     }
   },
   setup () {
+    const router = useRouter()
+    const store = useStore()
+    const setOut = () => {
+      store.commit('loginOut')
+      router.push({ name: 'login' })
+    }
     return {
+      setOut
     }
   },
   components: {

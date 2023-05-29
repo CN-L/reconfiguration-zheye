@@ -105,6 +105,13 @@ const store = createStore<GlobalDataProps>({
       state.token = token
       localStorage.setItem('token', JSON.parse(JSON.stringify(token)))
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    },
+    loginOut (state) {
+      localStorage.clear()
+      state.token = ''
+      state.user = {
+        isLogin: false
+      }
     }
   },
   actions: {
