@@ -2,7 +2,7 @@
 <div class="column-detail-page w-75 mx-auto">
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center" v-if="column">
       <div class="col-3 text-center">
-        <img v-if="!!column.avatar" :src="column.avatar?.url" :alt="column.title" class="rounded-circle border w-100">
+        <img :src="column.avatar && column.avatar.url" :alt="column.title" class="rounded-circle border w-100">
       </div>
       <div class="col-9">
         <h4>{{column.title}}</h4>
@@ -18,6 +18,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import PostList from '@/components/PostList.vue'
 import { ColumnProps } from '@/store/store'
+import { generateFitUrl } from '@/help'
 export default defineComponent({
   setup () {
     const store = useStore()
@@ -30,12 +31,8 @@ export default defineComponent({
     })
     const column = computed(() => {
       const storeNew = store.getters.getColumnById(currentId) as ColumnProps | undefined
-      if (storeNew && !storeNew.avatar) {
-        storeNew.avatar = {
-          url: require('@/assets/colmun.webp')
-        }
-      } else if (storeNew && storeNew.avatar) {
-        storeNew.avatar.url = storeNew.avatar.url + '?x-oss-process=image/resize,m_fixed,h_50,w_50'
+      if (storeNew) {
+        generateFitUrl(storeNew, 100, 100)
       }
       return storeNew
     })

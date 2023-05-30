@@ -1,7 +1,7 @@
 <template>
   <div class="create-post-page">
     <h4>新建文章</h4>
-    <Uploader :before-upload="uploadCheck" action="/upload" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
+    <Uploader @file-uploaded="handleFileUpload" :before-upload="uploadCheck" action="/upload" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
       <h2>点击上传头图</h2>
       <template #loading>
         <div class="d-flex">
@@ -51,6 +51,7 @@ export default defineComponent({
       }
       return passed
     }
+    let imageId = ''
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
     const titleRules: RulesProp = [
@@ -59,21 +60,32 @@ export default defineComponent({
     const contentRules: RulesProp = [
       { type: 'required', message: '文章详情不能为空' }
     ]
+    const handleFileUpload = (rawData: ResponseType<ImageProps>) => {
+      if (rawData.data._id) {
+        imageId = rawData.data._id
+      }
+    }
     const titleVal = ref()
     const contentVal = ref()
     const onFormSubmit = (result: boolean) => {
       if (result) {
-        const { column } = store.state.user
+        const { column, _id } = store.state.user
         if (column) {
           const newPost: PostProps = {
-            _id: new Date().getTime().toString(),
+            author: _id,
             title: titleVal.value,
             content: contentVal.value,
-            column: column.toString(),
-            createdAt: new Date().toLocaleDateString()
+            column
           }
-          store.commit('createPost', newPost)
-          router.push({ name: 'column', params: { id: column } })
+          if (imageId) {
+            newPost.image = imageId
+          }
+          store.dispatch('createPost', newPost).then(res => {
+            createMessage('发表成功，2秒后跳转到文章', 'success', 2000)
+            setTimeout(() => {
+              router.push({ name: 'column', params: { id: column } })
+            }, 2000)
+          })
         }
       }
     }
@@ -84,7 +96,8 @@ export default defineComponent({
       contentRules,
       onFormSubmit,
       uploadCheck,
-      Uploader
+      Uploader,
+      handleFileUpload
     }
   },
   components: {

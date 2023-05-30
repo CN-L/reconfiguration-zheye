@@ -120,6 +120,9 @@ const store = createStore<GlobalDataProps>({
     }
   },
   actions: {
+    createPost ({ commit }, playLoad) {
+      return postAndCommit('/posts', 'createPost', commit, playLoad)
+    },
     login ({ commit }, playLoad) {
       return postAndCommit('/user/login', 'login', commit, playLoad)
     },
