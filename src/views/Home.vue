@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <Uploader></Uploader>
+    <Uploader action="/upload"></Uploader>
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg col-md-8 mx-auto">
