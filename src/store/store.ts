@@ -8,6 +8,11 @@ export interface Iuser {
   column?: number,
   email?: string
 }
+export interface ResponseType<P = null> {
+  code: number,
+  msg: string,
+  data: P;
+}
 export interface GlobalErrorProps {
   status: boolean,
   message?: string

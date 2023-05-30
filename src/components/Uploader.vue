@@ -15,6 +15,7 @@ type UploadStatus = 'ready' | 'loading' | 'error' | 'success'
 type CheckFunction = (file: File) => boolean
 export default defineComponent({
   name: 'u-ploader',
+  emits: ['file-uploaded', 'file-uploaded-error'],
   props: {
     action: {
       type: String,
@@ -24,7 +25,7 @@ export default defineComponent({
       type: Function as PropType<CheckFunction>
     }
   },
-  setup (props) {
+  setup (props, { emit }) {
     const fileInput = ref<HTMLInputElement | null>(null)
     const fileStatus = ref<UploadStatus>('ready')
     const triggerUpload = () => {
@@ -51,8 +52,10 @@ export default defineComponent({
           }
         }).then((resp) => {
           fileStatus.value = 'success'
-        }).catch(erro => {
+          emit('file-uploaded', resp.data)
+        }).catch(error => {
           fileStatus.value = 'error'
+          emit('file-uploaded-error', error.data)
         }).finally(() => {
           // 上传后进行value清空
           if (fileInput.value) {
