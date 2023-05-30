@@ -1,7 +1,7 @@
 <template>
   <div class="create-post-page">
     <h4>新建文章</h4>
-    <Uploader action="/upload" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
+    <Uploader :before-upload="uploadCheck" action="/upload" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
       <h2>点击上传头图</h2>
       <template #loading>
         <div class="d-flex">
@@ -36,16 +36,20 @@ import { useRouter } from 'vue-router'
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store/store'
 import Uploader from '@/components/Uploader.vue'
 import axios from 'axios'
+import { beforeUploadCheck } from '@/help'
 import createMessage from '@/hooks/createMessage'
 export default defineComponent({
   setup () {
-    const beforeUpload = (file: File) => {
-      const allowType = ['image/jpeg', 'image/png']
-      if (!allowType.includes(file.type)) {
-        createMessage('仅支持png和jpg图片上传', 'error', 2000)
-        return false
+    const uploadCheck = (file: File) => {
+      const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
+      const { passed, error } = result
+      if (error === 'format') {
+        createMessage('上传图片只能是JPG/PNG格式', 'error')
       }
-      return true
+      if (error === 'size') {
+        createMessage('上传图片只能是JPG/PNG格式', 'error')
+      }
+      return passed
     }
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
@@ -79,6 +83,7 @@ export default defineComponent({
       titleRules,
       contentRules,
       onFormSubmit,
+      uploadCheck,
       Uploader
     }
   },
