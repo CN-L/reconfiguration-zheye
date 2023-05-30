@@ -1,5 +1,6 @@
 <template>
   <div class="file-upload">
+    <div class="file-upload-container" @click="triggerUpload" v-bind="$attrs">
       <slot v-if="fileStatus === 'loading'" name="loading">
         <button class="btn btn-primary" disabled>正在上传...</button>
       </slot>
@@ -7,8 +8,9 @@
         <button class="btn btn-primary" disabled>上传成功</button>
       </slot>
       <slot v-else>
-        <button @click="triggerUpload" class="btn btn-primary">点击上传</button>
+        <button class="btn btn-primary">点击上传</button>
       </slot>
+    </div>
     <input @change="handleFileChage" class="file-input d-none" ref="fileInput" type="file">
   </div>
 </template>
@@ -20,6 +22,7 @@ type CheckFunction = (file: File) => boolean
 export default defineComponent({
   name: 'u-ploader',
   emits: ['file-uploaded', 'file-uploaded-error'],
+  inheritAttrs: false, // 不在根节点继承属性
   props: {
     action: {
       type: String,

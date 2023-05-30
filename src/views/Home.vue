@@ -1,10 +1,5 @@
 <template>
   <div class="home-page">
-    <Uploader @file-uploaded="onFileUploaded" @file-uploaded-error="onFileUploadedError" :before-upload="beforeUpload" action="/upload">
-      <template v-slot:uploaded="{ upLoadedData }">
-        <img width="500" :src="upLoadedData.data.url" alt="">
-      </template>
-    </Uploader>
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg col-md-8 mx-auto">
@@ -24,9 +19,8 @@
 import { defineComponent, computed, onMounted } from 'vue'
 import ColumnList from '@/components/ColumnList.vue'
 import { useStore } from 'vuex'
-import { GlobalDataProps, ResponseType, ImageProps } from '@/store/store'
+import { GlobalDataProps } from '@/store/store'
 import Uploader from '@/components/Uploader.vue'
-import createMessage from '@/hooks/createMessage'
 export default defineComponent({
   name: 'homeView',
   setup () {
@@ -35,27 +29,8 @@ export default defineComponent({
     onMounted(() => {
       store.dispatch('fetchColumns')
     })
-    const beforeUpload = (file: File) => {
-      const allowType = ['image/jpeg', 'image/png']
-      if (!allowType.includes(file.type)) {
-        createMessage('仅支持png和jpg图片上传', 'error', 2000)
-        return false
-      }
-      return true
-    }
-    // 上传成功
-    const onFileUploaded = (resp: ResponseType<ImageProps>) => {
-      createMessage(`上传图片ID${resp.data._id}`, 'success', 2000)
-    }
-    // 上传失败回调
-    const onFileUploadedError = (err: string) => {
-      createMessage(err, 'error', 2000)
-    }
     return {
-      list,
-      beforeUpload,
-      onFileUploaded,
-      onFileUploadedError
+      list
     }
   },
   components: {

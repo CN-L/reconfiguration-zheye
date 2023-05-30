@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
-    <Vnode1 msg="我是你爹"></Vnode1>
+    <!-- <Vnode1 msg="我是你爹"></Vnode1> -->
     <router-view></router-view>
     <GlobalFooter></GlobalFooter>
   </div>

@@ -1,7 +1,20 @@
 <template>
   <div class="create-post-page">
     <h4>新建文章</h4>
-    <input @change.prevent="handleFileChage" type="file" name="file">
+    <Uploader action="/upload" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
+      <h2>点击上传头图</h2>
+      <template #loading>
+        <div class="d-flex">
+          <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only"></span>
+          </div>
+          <h2>正在上传</h2>
+        </div>
+      </template>
+      <template #uploaded="{ upLoadedData }">
+        <img :src="upLoadedData.data.url" alt="">
+      </template>
+    </Uploader>
     <ValidateForm @form-submit="onFormSubmit">
       <div class="mb-3">
         <label for="" class="form-label">文章标题：</label>
@@ -20,10 +33,20 @@ import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { GlobalDataProps, PostProps } from '@/store/store'
+import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store/store'
+import Uploader from '@/components/Uploader.vue'
 import axios from 'axios'
+import createMessage from '@/hooks/createMessage'
 export default defineComponent({
   setup () {
+    const beforeUpload = (file: File) => {
+      const allowType = ['image/jpeg', 'image/png']
+      if (!allowType.includes(file.type)) {
+        createMessage('仅支持png和jpg图片上传', 'error', 2000)
+        return false
+      }
+      return true
+    }
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
     const titleRules: RulesProp = [
@@ -50,32 +73,30 @@ export default defineComponent({
         }
       }
     }
-    const handleFileChage = (e: Event) => {
-      const target = e.target as HTMLInputElement
-      const files = target.files
-      if (files) {
-        const uploadedFile = files[0]
-        const formData = new FormData()
-        formData.append(uploadedFile.name, uploadedFile)
-        axios.post('/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then((res) => console.log(res, '鸟'))
-      }
-    }
     return {
       titleVal,
       contentVal,
       titleRules,
       contentRules,
       onFormSubmit,
-      handleFileChage
+      Uploader
     }
   },
   components: {
     ValidateForm,
-    ValidateInput
+    ValidateInput,
+    Uploader
   }
 })
 </script>
+<style>
+.create-post-page .file-upload-container {
+  height: 200px;
+  cursor: pointer;
+}
+.create-post-page .file-upload-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+</style>

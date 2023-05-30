@@ -49,7 +49,7 @@ router.beforeEach((to, from, next) => {
         }
       }).catch(e => {
         console.error(e)
-        store.commit('logout')
+        store.commit('loginOut')
         next('login')
       })
     } else {
