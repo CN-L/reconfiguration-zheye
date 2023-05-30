@@ -1,9 +1,15 @@
 <template>
   <div class="file-upload">
     <button @click="triggerUpload" class="btn btn-primary">
-     <span v-if="fileStatus === 'loading'">正在上传...</span>
-     <span v-else-if="fileStatus === 'success'">上传成功</span>
-     <span v-else>点击上传</span>
+      <slot v-if="fileStatus === 'loading'" name="loading">
+        <button class="btn btn-primary" disabled>正在上传...</button>
+      </slot>
+      <slot v-else-if="fileStatus === 'success'" name="uploaded">
+        <button class="btn btn-primary" disabled>上传成功</button>
+      </slot>
+      <slot v-else>
+        <button class="btn btn-primary" disabled>点击上传</button>
+      </slot>
     </button>
     <input @change="handleFileChage" class="file-input d-none" ref="fileInput" type="file">
   </div>

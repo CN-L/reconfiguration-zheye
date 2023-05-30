@@ -44,7 +44,7 @@ export default defineComponent({
       createMessage(`上传图片ID${resp.data._id}`, 'success', 2000)
     }
     // 上传失败回调
-    const onFileUploadedError = (error: string) => {
+    const onFileUploadedError = (error: any) => {
       createMessage(error, 'error', 2000)
     }
     return {
