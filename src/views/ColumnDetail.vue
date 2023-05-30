@@ -16,7 +16,7 @@
 import { defineComponent, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import PostList from '@/components/PostList.vue'
+import PostList from '@/views/PostList.vue'
 import { ColumnProps } from '@/store/store'
 import { generateFitUrl } from '@/help'
 export default defineComponent({
