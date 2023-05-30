@@ -1,7 +1,7 @@
 <template>
   <div class="create-post-page">
     <h4>新建文章</h4>
-    <input type="file" name="file">
+    <input @change.prevent="handleFileChage" type="file" name="file">
     <ValidateForm @form-submit="onFormSubmit">
       <div class="mb-3">
         <label for="" class="form-label">文章标题：</label>
@@ -61,7 +61,7 @@ export default defineComponent({
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-        })
+        }).then((res) => console.log(res, '鸟'))
       }
     }
     return {
@@ -69,7 +69,8 @@ export default defineComponent({
       contentVal,
       titleRules,
       contentRules,
-      onFormSubmit
+      onFormSubmit,
+      handleFileChage
     }
   },
   components: {

@@ -1,5 +1,6 @@
 <template>
   <div class="home-page">
+    <Uploader></Uploader>
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg col-md-8 mx-auto">
@@ -20,6 +21,7 @@ import { defineComponent, computed, onMounted } from 'vue'
 import ColumnList from '@/components/ColumnList.vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store/store'
+import Uploader from '@/components/Uploader.vue'
 export default defineComponent({
   name: 'homeView',
   setup () {
@@ -33,6 +35,7 @@ export default defineComponent({
     }
   },
   components: {
+    Uploader,
     ColumnList
   }
 })
