@@ -1,6 +1,7 @@
 <template>
   <div class="create-post-page">
     <h4>新建文章</h4>
+    <input type="file" name="file">
     <ValidateForm @form-submit="onFormSubmit">
       <div class="mb-3">
         <label for="" class="form-label">文章标题：</label>
@@ -20,6 +21,7 @@ import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { GlobalDataProps, PostProps } from '@/store/store'
+import axios from 'axios'
 export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
@@ -46,6 +48,20 @@ export default defineComponent({
           store.commit('createPost', newPost)
           router.push({ name: 'column', params: { id: column } })
         }
+      }
+    }
+    const handleFileChage = (e: Event) => {
+      const target = e.target as HTMLInputElement
+      const files = target.files
+      if (files) {
+        const uploadedFile = files[0]
+        const formData = new FormData()
+        formData.append(uploadedFile.name, uploadedFile)
+        axios.post('/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
       }
     }
     return {
