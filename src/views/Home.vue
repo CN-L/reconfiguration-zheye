@@ -1,6 +1,10 @@
 <template>
   <div class="home-page">
-    <Uploader @file-uploaded="onFileUploaded" @file-uploaded-error="onFileUploadedError" :before-upload="beforeUpload" action="/upload"></Uploader>
+    <Uploader @file-uploaded="onFileUploaded" @file-uploaded-error="onFileUploadedError" :before-upload="beforeUpload" action="/upload">
+      <template v-slot:uploaded="{ upLoadedData }">
+        <img width="500" :src="upLoadedData.data.url" alt="">
+      </template>
+    </Uploader>
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg col-md-8 mx-auto">
@@ -44,8 +48,8 @@ export default defineComponent({
       createMessage(`上传图片ID${resp.data._id}`, 'success', 2000)
     }
     // 上传失败回调
-    const onFileUploadedError = (error: any) => {
-      createMessage(error, 'error', 2000)
+    const onFileUploadedError = (err: string) => {
+      createMessage(err, 'error', 2000)
     }
     return {
       list,

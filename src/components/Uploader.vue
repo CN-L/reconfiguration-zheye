@@ -1,16 +1,14 @@
 <template>
   <div class="file-upload">
-    <button @click="triggerUpload" class="btn btn-primary">
       <slot v-if="fileStatus === 'loading'" name="loading">
         <button class="btn btn-primary" disabled>正在上传...</button>
       </slot>
-      <slot v-else-if="fileStatus === 'success'" name="uploaded">
+      <slot v-else-if="fileStatus === 'success'" name="uploaded" :upLoadedData="upLoadedData">
         <button class="btn btn-primary" disabled>上传成功</button>
       </slot>
       <slot v-else>
-        <button class="btn btn-primary" disabled>点击上传</button>
+        <button @click="triggerUpload" class="btn btn-primary">点击上传</button>
       </slot>
-    </button>
     <input @change="handleFileChage" class="file-input d-none" ref="fileInput" type="file">
   </div>
 </template>
@@ -39,6 +37,7 @@ export default defineComponent({
         fileInput.value.click()
       }
     }
+    const upLoadedData = ref()
     const handleFileChage = (e: Event) => {
       const target = e.target as HTMLInputElement
       if (target.files) {
@@ -58,10 +57,11 @@ export default defineComponent({
           }
         }).then((resp) => {
           fileStatus.value = 'success'
+          upLoadedData.value = resp.data
           emit('file-uploaded', resp.data)
         }).catch(error => {
           fileStatus.value = 'error'
-          emit('file-uploaded-error', error.data)
+          emit('file-uploaded-error', error)
         }).finally(() => {
           // 上传后进行value清空
           if (fileInput.value) {
@@ -73,6 +73,7 @@ export default defineComponent({
     return {
       triggerUpload,
       handleFileChage,
+      upLoadedData,
       fileInput,
       fileStatus
     }
