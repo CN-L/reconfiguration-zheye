@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <Uploader action="/upload"></Uploader>
+    <Uploader :before-upload="beforeUpload" action="/upload"></Uploader>
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg col-md-8 mx-auto">
@@ -22,6 +22,7 @@ import ColumnList from '@/components/ColumnList.vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store/store'
 import Uploader from '@/components/Uploader.vue'
+import createMessage from '@/hooks/createMessage'
 export default defineComponent({
   name: 'homeView',
   setup () {
@@ -30,8 +31,17 @@ export default defineComponent({
     onMounted(() => {
       store.dispatch('fetchColumns')
     })
+    const beforeUpload = (file: File) => {
+      const allowType = ['image/jpeg', 'image/png']
+      if (!allowType.includes(file.type)) {
+        createMessage('仅支持png和jpg图片上传', 'error', 2000)
+        return false
+      }
+      return false
+    }
     return {
-      list
+      list,
+      beforeUpload
     }
   },
   components: {
