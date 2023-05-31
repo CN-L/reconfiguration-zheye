@@ -1,13 +1,6 @@
 import { createStore, Commit } from 'vuex'
 
 import axios from 'axios'
-export interface Iuser {
-  isLogin: boolean,
-  nickName?: string,
-  _id?: number,
-  column?: number,
-  email?: string
-}
 export interface ResponseType<P = null> {
   code: number,
   msg: string,
@@ -50,6 +43,7 @@ export interface ColumnProps {
   description: string;
 }
 export interface GlobalDataProps {
+  currentPost: PostProps,
   error: GlobalErrorProps,
   token: string,
   loading: boolean,
@@ -72,6 +66,7 @@ const store = createStore<GlobalDataProps>({
     error: {
       status: false
     },
+    currentPost: {} as PostProps,
     token: localStorage.getItem('token') || '',
     loading: false,
     columns: [],
@@ -81,6 +76,9 @@ const store = createStore<GlobalDataProps>({
     }
   },
   mutations: {
+    fetchPost (state, rowData) {
+      state.currentPost = rowData.data
+    },
     setError (state, e: GlobalErrorProps) {
       state.error = e
     },
@@ -120,6 +118,9 @@ const store = createStore<GlobalDataProps>({
     }
   },
   actions: {
+    fetchPost ({ commit }, cid) {
+      return getAndCommit(`/posts/${cid}`, 'fetchPost', commit)
+    },
     createPost ({ commit }, playLoad) {
       return postAndCommit('/posts', 'createPost', commit, playLoad)
     },
