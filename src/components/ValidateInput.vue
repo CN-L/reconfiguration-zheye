@@ -1,7 +1,7 @@
 <template>
       <div class="mb-3">
         <input v-if="tag !== 'textarea'" v-bind="$attrs" v-model="inputRef.val" @blur="validateInput" class="form-control" :class="{'is-invalid': inputRef.error}" aria-describedby="emailHelp">
-        <textarea v-else :value="inputRef.val" :class="{'is-invalid': inputRef.error}" @blur="validateInput" cols="30" rows="5" v-bind="$attrs" aria-describedby="emailHelp"></textarea>
+        <textarea v-else v-model="inputRef.val" :class="{'is-invalid': inputRef.error}" @blur="validateInput" cols="30" rows="5" v-bind="$attrs" aria-describedby="emailHelp"></textarea>
         <div class="form-text invalid-feedback" v-if="inputRef.error">{{ inputRef.message }}</div>
       </div>
 </template>
@@ -42,7 +42,10 @@ export default defineComponent({
     const inputRef = reactive({
       val: computed({
         get: () => props.modelValue || '',
-        set: (newVal) => { context.emit('update:modelValue', newVal) }
+        set: (newVal) => {
+          console.log('6666', newVal)
+          context.emit('update:modelValue', newVal)
+        }
       }),
       error: false,
       message: ''
