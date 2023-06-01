@@ -1,10 +1,10 @@
 <template>
   <div class="vue-easymde-editor">
-    <textarea v-model="innerValue" placeholder="请输入文章详情" id="my-text-area"></textarea>
+    <textarea placeholder="请输入文章详情" id="my-text-area"></textarea>
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, defineEmits, ref, defineProps, onUnmounted } from 'vue'
+import { onMounted, defineEmits, ref, defineProps, onUnmounted, defineExpose } from 'vue'
 import EasyMDE, { Options } from 'easymde'
 import Vnode from './Vnode'
 interface EditorProps {
@@ -43,6 +43,19 @@ onMounted(() => {
       }
     })
   }
+})
+// 清空
+const clear = () => {
+  if (easyMDEInstace) {
+    easyMDEInstace.value('')
+  }
+}
+const getMDEInstance = () => {
+  return easyMDEInstace
+}
+defineExpose({
+  clear,
+  getMDEInstance
 })
 onUnmounted(() => {
   // 销毁easyMDE实例
