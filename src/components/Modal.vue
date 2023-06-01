@@ -8,7 +8,7 @@
             <button @click="onClose" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <slot></slot>
+            <slot>Modal body text goes here.</slot>
           </div>
           <div class="modal-footer">
             <button @click="onClose" type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>

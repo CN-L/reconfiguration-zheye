@@ -17,8 +17,11 @@
       <div v-html="currentHtml"></div>
       <div v-if="showEditArea" class="btn-group mt-5">
         <router-link :to="{name: 'create', query: { id: currentPost._id}}" type="button" class="btn btn-success">编辑</router-link>
-        <router-link :to="{name: 'create', query: { id: currentPost._id}}" type="button" class="btn btn-danger">删除</router-link>
+        <a  href="javascript:void(0)" @click="modalOpen = true" type="button" class="btn btn-danger">删除</a>
       </div>
+      <modal @modal-close="modalClose" title="提示" :visible="modalOpen">
+        <p>确定要删除这篇文章吗</p>
+      </modal>
 </div>
 </template>
 <script lang="ts">
@@ -28,18 +31,29 @@ import { useStore } from 'vuex'
 import { PostProps, GlobalDataProps, UserProps } from '@/store/store'
 import UserPropfile from '@/components/UserPropfile.vue'
 import MarkdownIt from 'markdown-it'
+import Modal from '@/components/Modal.vue'
 export default defineComponent({
   name: 'post-detail',
   components: {
+    Modal,
     UserPropfile
   },
   setup () {
+    const modalOpen = ref(false)
     const route = useRoute()
     const markdwon = MarkdownIt()
     const currentId = route.params.id
     const store = useStore<GlobalDataProps>()
     const currentPost = computed<PostProps>(() => store.state.currentPost)
     const imgInfo = ref()
+    onMounted(() => {
+      store.dispatch('fetchPost', currentId).then(post => {
+        if (typeof post.data.image === 'object') {
+          imgInfo.value = post.data.image.url || require('@/assets/column.jpg')
+          console.log(imgInfo.value)
+        }
+      })
+    })
     const showEditArea = computed(() => {
       const { isLogin, _id } = store.state.user
       if (currentPost.value && currentPost.value.author && isLogin) {
@@ -56,16 +70,14 @@ export default defineComponent({
         return null
       }
     })
-    onMounted(() => {
-      store.dispatch('fetchPost', currentId).then(post => {
-        if (typeof post.data.image === 'object') {
-          imgInfo.value = post.data.image.url || require('@/assets/column.jpg')
-          console.log(imgInfo.value)
-        }
-      })
-    })
+    // 关闭modal
+    const modalClose = () => {
+      modalOpen.value = false
+    }
     return {
       imgInfo,
+      modalOpen,
+      modalClose,
       showEditArea,
       currentHtml,
       currentPost
