@@ -6,7 +6,7 @@
       </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, PropType, onMounted } from 'vue'
+import { defineComponent, reactive, PropType, onMounted, watch } from 'vue'
 import { emitter } from '@/components/ValidateForm.vue'
 // 正则表达式
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -46,6 +46,9 @@ export default defineComponent({
       val: props.modelValue || '',
       error: false,
       message: ''
+    })
+    watch(() => props.modelValue, (newVal) => {
+      inputRef.val = newVal || ''
     })
     const updateVal = (e: Event) => {
       const targetVal = (e.target as HTMLInputElement).value
