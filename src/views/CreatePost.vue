@@ -21,7 +21,7 @@
         <ValidateInput :rules="titleRules" v-model="titleVal" placeholder="请输入文章标题" type="text"></ValidateInput>
       </div>
       <div class="mb-3">
-        <Editor :options="editorOptions" v-model="contentVal"></Editor>
+        <Editor ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
         <!-- <label for="" class="form-label">文章详情：</label>
         <ValidateInput rows="10" cols="100" :rules="contentRules" v-model="contentVal" placeholder="请输入文章详情" tag="textarea"></ValidateInput> -->
       </div>
@@ -39,12 +39,18 @@ import Uploader from '@/components/Uploader.vue'
 import { beforeUploadCheck } from '@/help'
 import createMessage from '@/hooks/createMessage'
 import Editor from '@/components/Editor.vue'
-import { Options } from 'easymde'
+import EasyMDE, { Options } from 'easymde'
+interface EditorInstance {
+  clear: () => void,
+  getMDEInstance: () => EasyMDE | null
+}
 export default defineComponent({
   setup () {
     const editorOptions : Options = {
       spellChecker: false
     }
+    const editorRef = ref<EditorInstance | null>()
+    // editorRef.value?.clear()
     const uploadData = ref()
     const uploadCheck = (file: File) => {
       const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
@@ -107,6 +113,10 @@ export default defineComponent({
       }
     }
     onMounted(() => {
+      if (editorRef.value) {
+        console.log(editorRef.value.getMDEInstance(), '哈')
+        // editorRef.value.clear()
+      }
       if (isEditMode) {
         store.dispatch('fetchPost', route.query.id).then((rowData: ResponseType<PostProps>) => {
           const currentPost = rowData.data
@@ -120,6 +130,7 @@ export default defineComponent({
     })
     return {
       titleVal,
+      editorRef,
       editorOptions,
       isEditMode,
       contentVal,
