@@ -12,6 +12,9 @@
           <router-link class="dropdown-item" :to="{name: 'create'}">新建文章</router-link>
         </DropdownItem>
         <DropdownItem>
+          <router-link class="dropdown-item" :to="{ name: 'column', params: {id: user.column}}">我的专栏</router-link>
+        </DropdownItem>
+        <DropdownItem>
           <a href="#" class="dropdown-item">编辑资料</a>
         </DropdownItem>
         <DropdownItem>
