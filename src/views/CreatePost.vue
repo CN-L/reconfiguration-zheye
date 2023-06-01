@@ -1,7 +1,7 @@
 <template>
   <div class="create-post-page">
     <h4>新建文章</h4>
-    <Uploader @file-uploaded="handleFileUpload" :before-upload="uploadCheck" action="/upload" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
+    <Uploader :uploaded="uploadData" @file-uploaded="handleFileUpload" :before-upload="uploadCheck" action="/upload" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
       <h2>点击上传头图</h2>
       <template #loading>
         <div class="d-flex">
@@ -28,18 +28,18 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store/store'
 import Uploader from '@/components/Uploader.vue'
-import axios from 'axios'
 import { beforeUploadCheck } from '@/help'
 import createMessage from '@/hooks/createMessage'
 export default defineComponent({
   setup () {
+    const uploadData = ref()
     const uploadCheck = (file: File) => {
       const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
       const { passed, error } = result
@@ -54,6 +54,8 @@ export default defineComponent({
     let imageId = ''
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
+    const route = useRoute()
+    const isEditMode = !!route.query.id
     const titleRules: RulesProp = [
       { type: 'required', message: '文章标题不能为空' }
     ]
@@ -89,9 +91,22 @@ export default defineComponent({
         }
       }
     }
+    onMounted(() => {
+      if (isEditMode) {
+        store.dispatch('fetchPost', route.query.id).then((rowData: ResponseType<PostProps>) => {
+          const currentPost = rowData.data
+          if (currentPost.image) {
+            uploadData.value = { data: currentPost.image }
+            contentVal.value = currentPost.content
+            titleVal.value = currentPost.title
+          }
+        })
+      }
+    })
     return {
       titleVal,
       contentVal,
+      uploadData,
       titleRules,
       contentRules,
       onFormSubmit,
