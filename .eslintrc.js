@@ -13,6 +13,7 @@ module.exports = {
   },
   rules: {
     'vue/no-unused-components': 0,
+    'vue/multi-word-component-names': 0, // 组件名称不驼峰式
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   }

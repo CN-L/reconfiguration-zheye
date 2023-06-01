@@ -21,7 +21,7 @@
         <ValidateInput :rules="titleRules" v-model="titleVal" placeholder="请输入文章标题" type="text"></ValidateInput>
       </div>
       <div class="mb-3">
-        <textarea placeholder="请输入文章详情" v-model="contentVal" id="my-text-area"></textarea>
+        <Editor :options="editorOptions" v-model="contentVal"></Editor>
         <!-- <label for="" class="form-label">文章详情：</label>
         <ValidateInput rows="10" cols="100" :rules="contentRules" v-model="contentVal" placeholder="请输入文章详情" tag="textarea"></ValidateInput> -->
       </div>
@@ -38,9 +38,13 @@ import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store/st
 import Uploader from '@/components/Uploader.vue'
 import { beforeUploadCheck } from '@/help'
 import createMessage from '@/hooks/createMessage'
-import EasyMDE from 'easymde'
+import Editor from '@/components/Editor.vue'
+import { Options } from 'easymde'
 export default defineComponent({
   setup () {
+    const editorOptions : Options = {
+      spellChecker: false
+    }
     const uploadData = ref()
     const uploadCheck = (file: File) => {
       const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
@@ -103,8 +107,6 @@ export default defineComponent({
       }
     }
     onMounted(() => {
-      // 此时才可以操作dom
-      const easyMDE = new EasyMDE({ element: document.getElementById('my-text-area') as HTMLTextAreaElement })
       if (isEditMode) {
         store.dispatch('fetchPost', route.query.id).then((rowData: ResponseType<PostProps>) => {
           const currentPost = rowData.data
@@ -118,6 +120,7 @@ export default defineComponent({
     })
     return {
       titleVal,
+      editorOptions,
       isEditMode,
       contentVal,
       uploadData,
@@ -130,6 +133,7 @@ export default defineComponent({
     }
   },
   components: {
+    Editor,
     ValidateForm,
     ValidateInput,
     Uploader
