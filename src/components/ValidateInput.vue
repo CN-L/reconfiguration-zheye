@@ -1,12 +1,12 @@
 <template>
       <div class="mb-3">
-        <input v-if="tag !== 'textarea'" v-bind="$attrs" @input="updateVal" :value="inputRef.val" @blur="validateInput" class="form-control" :class="{'is-invalid': inputRef.error}" aria-describedby="emailHelp">
-        <textarea v-else :value="inputRef.val" :class="{'is-invalid': inputRef.error}" @blur="validateInput" @input="updateVal" cols="30" rows="5" v-bind="$attrs" aria-describedby="emailHelp"></textarea>
+        <input v-if="tag !== 'textarea'" v-bind="$attrs" v-model="inputRef.val" @blur="validateInput" class="form-control" :class="{'is-invalid': inputRef.error}" aria-describedby="emailHelp">
+        <textarea v-else :value="inputRef.val" :class="{'is-invalid': inputRef.error}" @blur="validateInput" cols="30" rows="5" v-bind="$attrs" aria-describedby="emailHelp"></textarea>
         <div class="form-text invalid-feedback" v-if="inputRef.error">{{ inputRef.message }}</div>
       </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, PropType, onMounted, watch } from 'vue'
+import { defineComponent, reactive, PropType, onMounted, watch, computed } from 'vue'
 import { emitter } from '@/components/ValidateForm.vue'
 // 正则表达式
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -39,21 +39,16 @@ export default defineComponent({
       emitter.emit('form-item-created', validateInput)
       emitter.emit('form-item-clear', clearItemInput)
     })
-    const clearItemInput = () => {
-      inputRef.val = ''
-    }
     const inputRef = reactive({
-      val: props.modelValue || '',
+      val: computed({
+        get: () => props.modelValue || '',
+        set: (newVal) => { context.emit('update:modelValue', newVal) }
+      }),
       error: false,
       message: ''
     })
-    watch(() => props.modelValue, (newVal) => {
-      inputRef.val = newVal || ''
-    })
-    const updateVal = (e: Event) => {
-      const targetVal = (e.target as HTMLInputElement).value
-      inputRef.val = targetVal
-      context.emit('update:modelValue', targetVal)
+    const clearItemInput = () => {
+      inputRef.val = ''
     }
     const validateInput = () => {
       if (props.rules) {
@@ -96,7 +91,6 @@ export default defineComponent({
     }
     return {
       validateInput,
-      updateVal,
       inputRef
     }
   }
