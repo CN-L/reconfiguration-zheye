@@ -9,7 +9,7 @@ import Darkmode from 'darkmode-js'
 
 const options = {
   bottom: '64px', // default: '32px'
-  right: 'unset', // default: '32px'
+  right: '0', // default: '32px'
   left: 'unset', // default: 'unset'
   time: '0.5s', // default: '0.3s'
   mixColor: '#fff', // default: '#fff'
