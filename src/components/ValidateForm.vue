@@ -29,9 +29,7 @@ export default defineComponent({
     }
     const submitForm = () => {
       const result = funcArray.map(func => func()).every((item) => item)
-      if (result) context.emit('form-submit', result)
-      // clearInputs()
-      // context.emit('form-submit', result)
+      if (result) context.emit('form-submit', result); clearInputs()
     }
     const callBack = (func: ValidateFunc) => {
       funcArray.push(func)
