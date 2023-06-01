@@ -43,7 +43,6 @@ export default defineComponent({
       val: computed({
         get: () => props.modelValue || '',
         set: (newVal) => {
-          console.log('6666', newVal)
           context.emit('update:modelValue', newVal)
         }
       }),

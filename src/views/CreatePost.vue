@@ -1,6 +1,6 @@
 <template>
   <div class="create-post-page">
-    <h4>新建文章</h4>
+    <h4>{{ isEditMode ? '编辑文章' : '新建文章' }}</h4>
     <Uploader :uploaded="uploadData" @file-uploaded="handleFileUpload" :before-upload="uploadCheck" action="/upload" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
       <h2>点击上传头图</h2>
       <template #loading>
@@ -82,7 +82,16 @@ export default defineComponent({
           if (imageId) {
             newPost.image = imageId
           }
-          store.dispatch('createPost', newPost).then(res => {
+          const actionName = isEditMode ? 'updatePost' : 'createpost'
+          const sendData = isEditMode
+            ? {
+                id: route.query.id,
+                // url: upLoadedData.data.url
+                payload: newPost
+              }
+            : newPost
+          console.log(sendData, '结果')
+          store.dispatch(actionName, sendData).then(res => {
             createMessage('发表成功，2秒后跳转到文章', 'success', 2000)
             setTimeout(() => {
               router.push({ name: 'column', params: { id: column } })
@@ -105,6 +114,7 @@ export default defineComponent({
     })
     return {
       titleVal,
+      isEditMode,
       contentVal,
       uploadData,
       titleRules,
