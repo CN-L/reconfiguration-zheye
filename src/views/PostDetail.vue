@@ -19,19 +19,21 @@
         <router-link :to="{name: 'create', query: { id: currentPost._id}}" type="button" class="btn btn-success">编辑</router-link>
         <a  href="javascript:void(0)" @click="modalOpen = true" type="button" class="btn btn-danger">删除</a>
       </div>
-      <modal @modal-close="modalClose" title="提示" :visible="modalOpen">
+      <modal @modal-close="modalClose" @modal-confirm="modalConfirm" title="提示" :visible="modalOpen">
         <p>确定要删除这篇文章吗</p>
       </modal>
 </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { PostProps, GlobalDataProps, UserProps } from '@/store/store'
+import { PostProps, GlobalDataProps, UserProps, ResponseType } from '@/store/store'
 import UserPropfile from '@/components/UserPropfile.vue'
 import MarkdownIt from 'markdown-it'
 import Modal from '@/components/Modal.vue'
+import createMessage from '@/hooks/createMessage'
+import router from '@/router'
 export default defineComponent({
   name: 'post-detail',
   components: {
@@ -41,6 +43,7 @@ export default defineComponent({
   setup () {
     const modalOpen = ref(false)
     const route = useRoute()
+    const router = useRouter()
     const markdwon = MarkdownIt()
     const currentId = route.params.id
     const store = useStore<GlobalDataProps>()
@@ -74,10 +77,19 @@ export default defineComponent({
     const modalClose = () => {
       modalOpen.value = false
     }
+    // 删除操作
+    const modalConfirm = () => {
+      modalOpen.value = false
+      store.dispatch('deletePost', currentId).then((resp: ResponseType<PostProps>) => {
+        createMessage('删除成功，2秒后跳转到专栏首页', 'success', 2000)
+        setTimeout(() => router.push({ name: 'column', params: { id: resp.data.column } }), 2000)
+      })
+    }
     return {
       imgInfo,
       modalOpen,
       modalClose,
+      modalConfirm,
       showEditArea,
       currentHtml,
       currentPost
