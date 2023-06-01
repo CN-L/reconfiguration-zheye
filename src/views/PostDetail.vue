@@ -15,13 +15,17 @@
         ></user-propfile>
       </div>
       <div v-html="currentHtml"></div>
+      <div v-if="showEditArea" class="btn-group mt-5">
+        <router-link :to="{name: 'create', query: { id: currentPost._id}}" type="button" class="btn btn-success">编辑</router-link>
+        <router-link :to="{name: 'create', query: { id: currentPost._id}}" type="button" class="btn btn-danger">删除</router-link>
+      </div>
 </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, reactive } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { PostProps, GlobalDataProps } from '@/store/store'
+import { PostProps, GlobalDataProps, UserProps } from '@/store/store'
 import UserPropfile from '@/components/UserPropfile.vue'
 import MarkdownIt from 'markdown-it'
 export default defineComponent({
@@ -36,6 +40,14 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const currentPost = computed<PostProps>(() => store.state.currentPost)
     const imgInfo = ref()
+    const showEditArea = computed(() => {
+      const { isLogin, _id } = store.state.user
+      if (currentPost.value && currentPost.value.author && isLogin) {
+        const postAuthor = currentPost.value.author as UserProps
+        return postAuthor._id === _id
+      }
+      return null
+    })
     const currentHtml = computed(() => {
       if (currentPost.value && currentPost.value.content) {
         console.log(currentPost.value.content)
@@ -54,6 +66,7 @@ export default defineComponent({
     })
     return {
       imgInfo,
+      showEditArea,
       currentHtml,
       currentPost
     }
