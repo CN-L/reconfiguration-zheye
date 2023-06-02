@@ -117,7 +117,6 @@ export default defineComponent({
                 payload: newPost
               }
             : newPost
-          console.log(sendData, '结果', actionName)
           store.dispatch(actionName, sendData)
             .then(res => {
               createMessage('发表成功，2秒后跳转到文章', 'success', 2000)

@@ -1,10 +1,10 @@
 <template>
   <div class="vue-easymde-editor">
-    <textarea ref="textAreaRef" ></textarea>
+    <textarea ref="textAreaRef" id="my-text-area"></textarea>
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, defineEmits, watch, ref, defineProps, onUnmounted, defineExpose } from 'vue'
+import { onMounted, defineEmits, watch, ref, defineProps, onUnmounted, defineExpose, nextTick } from 'vue'
 import EasyMDE, { Options } from 'easymde'
 interface EditorProps {
   modelValue?: string;
@@ -25,8 +25,7 @@ watch(() => props.modelValue, (newVal) => {
   }
 }, { immediate: true })
 const textAreaRef = ref(null)
-onMounted(() => {
-  console.log(textAreaRef, 'ao')
+onMounted(async () => {
   // const vNode = document.getElementById('my-text-area') as HTMLTextAreaElement
   console.log(textAreaRef)
   if (textAreaRef.value) {
