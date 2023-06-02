@@ -33,6 +33,7 @@ import UserPropfile from '@/components/UserPropfile.vue'
 import MarkdownIt from 'markdown-it'
 import Modal from '@/components/Modal.vue'
 import createMessage from '@/hooks/createMessage'
+import { marked } from 'marked'
 import router from '@/router'
 export default defineComponent({
   name: 'post-detail',
@@ -44,7 +45,6 @@ export default defineComponent({
     const modalOpen = ref(false)
     const route = useRoute()
     const router = useRouter()
-    const markdwon = MarkdownIt()
     const currentId = route.params.id
     const store = useStore<GlobalDataProps>()
     const currentPost = computed<PostProps>(() => store.state.currentPost)
@@ -66,9 +66,10 @@ export default defineComponent({
       return null
     })
     const currentHtml = computed(() => {
+      console.log(currentHtml.value)
       if (currentPost.value && currentPost.value.content) {
         console.log(currentPost.value.content)
-        return markdwon.render(currentPost.value.content)
+        return marked.parse(currentPost.value.content)
       } else {
         return null
       }

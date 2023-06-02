@@ -24,12 +24,13 @@ export default defineComponent({
   setup (props, context) {
     let funcArray: ValidateFunc[] = []
     let clearArray: clearAllFunc[] = []
+    // 清除input输入框
     const clearInputs = () => {
       clearArray.map(item => item())
     }
     const submitForm = () => {
       const result = funcArray.map(func => func()).every((item) => item)
-      if (result) context.emit('form-submit', result); clearInputs()
+      if (result) context.emit('form-submit', result) // clearInputs()
     }
     const callBack = (func: ValidateFunc) => {
       funcArray.push(func)

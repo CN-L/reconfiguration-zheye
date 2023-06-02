@@ -1,31 +1,38 @@
 <template>
   <div class="vue-easymde-editor">
-    <textarea placeholder="请输入文章详情" id="my-text-area"></textarea>
+    <textarea ref="textAreaRef" ></textarea>
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, defineEmits, ref, defineProps, onUnmounted, defineExpose } from 'vue'
+import { onMounted, defineEmits, watch, ref, defineProps, onUnmounted, defineExpose } from 'vue'
 import EasyMDE, { Options } from 'easymde'
-import Vnode from './Vnode'
 interface EditorProps {
-  modeValue?: string;
+  modelValue?: string;
   options?: Options
 }
 interface EditorEvents {
-  (type: 'update:modalValue', value: string): void,
+  (type: 'update:modelValue', value: string): void,
   (type: 'change', value: string): void,
   (type: 'blur', value?: string): void
 }
 const props = defineProps<EditorProps>() // 定义props的值
-const emit = defineEmits<EditorEvents>() // 定义emits
+const emits = defineEmits<EditorEvents>() // 定义emits
 let easyMDEInstace: EasyMDE | null = null
-const innerValue = ref(props.modeValue || '')
+const innerValue = ref(props.modelValue || '')
+watch(() => props.modelValue, (newVal) => {
+  if (newVal) {
+    innerValue.value = newVal || ''
+  }
+}, { immediate: true })
+const textAreaRef = ref(null)
 onMounted(() => {
-  const vNode = document.getElementById('my-text-area') as HTMLTextAreaElement
-  if (vNode) {
+  console.log(textAreaRef, 'ao')
+  // const vNode = document.getElementById('my-text-area') as HTMLTextAreaElement
+  console.log(textAreaRef)
+  if (textAreaRef.value) {
     const config:Options = {
       ...(props.options || {}),
-      element: vNode,
+      element: textAreaRef.value,
       initialValue: innerValue.value
     }
     easyMDEInstace = new EasyMDE(config)
@@ -33,13 +40,13 @@ onMounted(() => {
       if (easyMDEInstace) {
         const updateValue = easyMDEInstace.value()
         innerValue.value = updateValue
-        emit('update:modalValue', updateValue)
-        emit('change', updateValue)
+        emits('update:modelValue', updateValue)
+        emits('change', updateValue)
       }
     })
     easyMDEInstace.codemirror.on('blur', () => {
       if (easyMDEInstace) {
-        emit('blur')
+        emits('blur')
       }
     })
   }
@@ -65,3 +72,8 @@ onUnmounted(() => {
   }
 })
 </script>
+<style>
+.vue-easymde-editor.is-invalid {
+  border: 1px solid #dc3545;
+}
+</style>

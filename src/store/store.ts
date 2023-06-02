@@ -148,6 +148,7 @@ const store = createStore<GlobalDataProps>({
       return getAndCommit(`/posts/${cid}`, 'fetchPost', commit)
     },
     createPost ({ commit }, playLoad) {
+      console.log(playLoad, '22222')
       return postAndCommit('/posts', 'createPost', commit, playLoad)
     },
     login ({ commit }, playLoad) {

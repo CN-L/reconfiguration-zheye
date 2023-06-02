@@ -21,15 +21,15 @@
         <ValidateInput :rules="titleRules" v-model="titleVal" placeholder="请输入文章标题" type="text"></ValidateInput>
       </div>
       <div class="mb-3">
-        <Editor ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
-        <!-- <label for="" class="form-label">文章详情：</label>
-        <ValidateInput rows="10" cols="100" :rules="contentRules" v-model="contentVal" placeholder="请输入文章详情" tag="textarea"></ValidateInput> -->
+        <label for="" class="form-label">文章详情：</label>
+        <Editor :class="{'is-invalid': !editorStatus.isValid}" @blur="checkEditor" ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
+        <div class="form-text invalid-feedback" v-if="!editorStatus.isValid">{{ editorStatus.message }}</div>
       </div>
     </ValidateForm>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, reactive } from 'vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import { useStore } from 'vuex'
@@ -47,10 +47,24 @@ interface EditorInstance {
 export default defineComponent({
   setup () {
     const editorOptions : Options = {
-      spellChecker: false
+      spellChecker: false,
+      placeholder: '请输入文章详情'
+    }
+    const editorStatus = reactive({
+      isValid: true,
+      message: ''
+    })
+    const checkEditor = () => {
+      if (contentVal.value.trim() === '') {
+        editorStatus.isValid = false
+        editorStatus.message = '文章详情不能为空'
+      } else {
+        editorStatus.isValid = true
+        editorStatus.message = ''
+      }
     }
     const editorRef = ref<EditorInstance | null>()
-    // editorRef.value?.clear()
+
     const uploadData = ref()
     const uploadCheck = (file: File) => {
       const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
@@ -80,9 +94,10 @@ export default defineComponent({
       }
     }
     const titleVal = ref()
-    const contentVal = ref()
+    const contentVal = ref('')
     const onFormSubmit = (result: boolean) => {
-      if (result) {
+      checkEditor()
+      if (result && editorStatus.isValid) {
         const { column, _id } = store.state.user
         if (column) {
           const newPost: PostProps = {
@@ -94,7 +109,7 @@ export default defineComponent({
           if (imageId) {
             newPost.image = imageId
           }
-          const actionName = isEditMode ? 'updatePost' : 'createpost'
+          const actionName = isEditMode ? 'updatePost' : 'createPost'
           const sendData = isEditMode
             ? {
                 id: route.query.id,
@@ -102,33 +117,34 @@ export default defineComponent({
                 payload: newPost
               }
             : newPost
-          console.log(sendData, '结果')
-          store.dispatch(actionName, sendData).then(res => {
-            createMessage('发表成功，2秒后跳转到文章', 'success', 2000)
-            setTimeout(() => {
-              router.push({ name: 'column', params: { id: column } })
-            }, 2000)
-          })
+          console.log(sendData, '结果', actionName)
+          store.dispatch(actionName, sendData)
+            .then(res => {
+              createMessage('发表成功，2秒后跳转到文章', 'success', 2000)
+              setTimeout(() => {
+                router.push({ name: 'column', params: { id: column } })
+              }, 2000)
+            })
         }
       }
     }
     onMounted(() => {
       if (editorRef.value) {
-        console.log(editorRef.value.getMDEInstance(), '哈')
-        // editorRef.value.clear()
+        console.log(editorRef.value.getMDEInstance(), '测试')
       }
       if (isEditMode) {
         store.dispatch('fetchPost', route.query.id).then((rowData: ResponseType<PostProps>) => {
           const currentPost = rowData.data
           if (currentPost.image) {
             uploadData.value = { data: currentPost.image }
-            contentVal.value = currentPost.content
+            contentVal.value = currentPost.content || ''
             titleVal.value = currentPost.title
           }
         })
       }
     })
     return {
+      editorStatus,
       titleVal,
       editorRef,
       editorOptions,
@@ -140,6 +156,7 @@ export default defineComponent({
       onFormSubmit,
       uploadCheck,
       Uploader,
+      checkEditor,
       handleFileUpload
     }
   },
