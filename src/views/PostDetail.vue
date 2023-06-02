@@ -30,7 +30,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { PostProps, GlobalDataProps, UserProps, ResponseType } from '@/store/store'
 import UserPropfile from '@/components/UserPropfile.vue'
-import MarkdownIt from 'markdown-it'
 import Modal from '@/components/Modal.vue'
 import createMessage from '@/hooks/createMessage'
 import { marked } from 'marked'
@@ -47,7 +46,7 @@ export default defineComponent({
     const router = useRouter()
     const currentId = route.params.id
     const store = useStore<GlobalDataProps>()
-    const currentPost = computed<PostProps>(() => store.state.currentPost)
+    const currentPost = computed<PostProps>(() => store.getters.getCurrentPost(currentId))
     const imgInfo = ref()
     onMounted(() => {
       store.dispatch('fetchPost', currentId).then(post => {

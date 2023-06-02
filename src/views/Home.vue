@@ -25,7 +25,8 @@ export default defineComponent({
   name: 'homeView',
   setup () {
     const store = useStore<GlobalDataProps>()
-    const list = computed(() => store.state.columns)
+    const list = computed(() => store.getters.getColumns)
+    console.log(list.value, '你说啥')
     onMounted(() => {
       store.dispatch('fetchColumns')
     })
