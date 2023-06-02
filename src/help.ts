@@ -40,3 +40,40 @@ export function beforeUploadCheck (file: File, condition: ICondition) {
     error
   }
 }
+interface TestProps {
+  _id: string,
+  name: string
+}
+const testData: TestProps[] = [
+  {
+    _id: '1',
+    name: '秦始皇'
+  },
+  {
+    _id: '2',
+    name: '昊天'
+  }
+]
+const testData2 = {
+  1: {
+    _id: '1',
+    name1: '秦始皇'
+  },
+  2: {
+    _id: '2',
+    name1: '昊天'
+  }
+}
+export const arrToObjt = <T extends { _id?: string}>(arr: Array<T>) => {
+  return arr.reduce((prev, current) => {
+    if (current._id) {
+      prev[current._id] = current
+    }
+    return prev
+  }, {} as {[key: string] : T})
+}
+
+export const objtToArray = <T>(obj: {[key:string]: T}) => {
+  return Object.keys(obj).map((it: string) => obj[it])
+}
+console.log(arrToObjt(testData), objtToArray(testData2))

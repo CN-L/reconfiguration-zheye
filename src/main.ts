@@ -8,6 +8,7 @@ import axios from 'axios'
 import Darkmode from 'darkmode-js'
 import 'easymde/dist/easymde.min.css' // css文件
 const options = {
+  darkColor: '#222',
   bottom: '64px', // default: '32px'
   right: '32px', // default: '32px'
   left: 'unset', // default: 'unset'
@@ -23,7 +24,6 @@ const options = {
 
 const darkmode = new Darkmode(options)
 darkmode.showWidget()
-
 // 替换 baseURL
 axios.defaults.baseURL = 'http://apis.imooc.com/api/'
 // 下面的 icode 值是从慕课网获取的 token 值，可以在课程右侧的项目接口校验码找到
