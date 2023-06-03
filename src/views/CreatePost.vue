@@ -47,6 +47,7 @@ import Editor from '@/components/Editor.vue'
 import EasyMDE, { Options } from 'easymde'
 interface EditorInstance {
   clear: () => void,
+  textAreaRef: string,
   getMDEInstance: () => EasyMDE | null
 }
 export default defineComponent({
@@ -135,7 +136,7 @@ export default defineComponent({
     }
     onMounted(() => {
       if (editorRef.value) {
-        console.log(editorRef.value.getMDEInstance(), '测试')
+        console.log(editorRef.value.textAreaRef, '测试')
       }
       if (isEditMode) {
         store.dispatch('fetchPost', route.query.id).then((rowData: ResponseType<PostProps>) => {

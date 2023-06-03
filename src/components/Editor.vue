@@ -64,6 +64,7 @@ const getMDEInstance = () => {
 }
 defineExpose({
   clear,
+  textAreaRef, // 暴露属性
   getMDEInstance
 })
 onUnmounted(() => {
