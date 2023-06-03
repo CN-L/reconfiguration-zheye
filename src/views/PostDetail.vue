@@ -1,4 +1,5 @@
 <template>
+  {{ currentPost.author }}
 <div class="post-detail-page w-100 mx-auto">
   <div class="post-detail-container">
     <div class="header-image-container text-center rounded">
@@ -33,7 +34,6 @@ import UserPropfile from '@/components/UserPropfile.vue'
 import Modal from '@/components/Modal.vue'
 import createMessage from '@/hooks/createMessage'
 import { marked } from 'marked'
-import router from '@/router'
 export default defineComponent({
   name: 'post-detail',
   components: {
@@ -58,16 +58,16 @@ export default defineComponent({
     })
     const showEditArea = computed(() => {
       const { isLogin, _id } = store.state.user
+      console.log(currentPost.value)
       if (currentPost.value && currentPost.value.author && isLogin) {
-        const postAuthor = currentPost.value.author as UserProps
-        return postAuthor._id === _id
+        const postAuthor = currentPost.value.author
+        console.log(postAuthor, _id)
+        return postAuthor === _id
       }
       return null
     })
     const currentHtml = computed(() => {
-      console.log(currentHtml.value)
       if (currentPost.value && currentPost.value.content) {
-        console.log(currentPost.value.content)
         return marked.parse(currentPost.value.content)
       } else {
         return null
