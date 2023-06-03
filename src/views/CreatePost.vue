@@ -22,7 +22,9 @@
       </div>
       <div class="mb-3">
         <label for="" class="form-label">文章详情：</label>
-        <Editor v-if="(isEditMode && contentVal) || !isEditMode" :class="{'is-invalid': !editorStatus.isValid}" @blur="checkEditor" ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
+        <!-- 渲染文章详情markdown可使用 v-if="(isEditMode && contentVal) || !isEditMode" -->
+        <!-- 随之而来的问题是获取不到此组件的实例，只能在其为true时候才能获得到 -->
+        <Editor :class="{'is-invalid': !editorStatus.isValid}" @blur="checkEditor" ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
         <div class="form-text invalid-feedback" v-if="!editorStatus.isValid">{{ editorStatus.message }}</div>
       </div>
     </ValidateForm>
