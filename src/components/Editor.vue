@@ -18,11 +18,13 @@ interface EditorEvents {
 }
 const props = defineProps<EditorProps>() // 定义props的值
 const emits = defineEmits<EditorEvents>() // 定义emits
-let easyMDEInstace: EasyMDE | null = null
+let easyMDEInstance: EasyMDE | null = null
 const innerValue = ref(props.modelValue || '')
 watch(() => props.modelValue, (newVal) => {
-  if (newVal) {
-    innerValue.value = newVal || ''
+  if (easyMDEInstance) {
+    if (newVal !== innerValue.value) {
+      easyMDEInstance.value(newVal || '')
+    }
   }
 }, { immediate: true })
 const textAreaRef = ref(null)
@@ -35,17 +37,17 @@ onMounted(() => {
       element: textAreaRef.value,
       initialValue: innerValue.value
     }
-    easyMDEInstace = new EasyMDE(config)
-    easyMDEInstace.codemirror.on('change', () => {
-      if (easyMDEInstace) {
-        const updateValue = easyMDEInstace.value()
+    easyMDEInstance = new EasyMDE(config)
+    easyMDEInstance.codemirror.on('change', () => {
+      if (easyMDEInstance) {
+        const updateValue = easyMDEInstance.value()
         innerValue.value = updateValue
         emits('update:modelValue', updateValue)
         emits('change', updateValue)
       }
     })
-    easyMDEInstace.codemirror.on('blur', () => {
-      if (easyMDEInstace) {
+    easyMDEInstance.codemirror.on('blur', () => {
+      if (easyMDEInstance) {
         emits('blur')
       }
     })
@@ -53,12 +55,12 @@ onMounted(() => {
 })
 // 清空
 const clear = () => {
-  if (easyMDEInstace) {
-    easyMDEInstace.value('')
+  if (easyMDEInstance) {
+    easyMDEInstance.value('')
   }
 }
 const getMDEInstance = () => {
-  return easyMDEInstace
+  return easyMDEInstance
 }
 defineExpose({
   clear,
@@ -66,9 +68,9 @@ defineExpose({
 })
 onUnmounted(() => {
   // 销毁easyMDE实例
-  if (easyMDEInstace) {
-    easyMDEInstace.toTextArea()
-    easyMDEInstace = null
+  if (easyMDEInstance) {
+    easyMDEInstance.toTextArea()
+    easyMDEInstance = null
   }
 })
 </script>

@@ -31,7 +31,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, defineAsyncComponent } from 'vue'
+import { defineComponent, ref, onMounted, reactive, defineAsyncComponent, nextTick } from 'vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import { useStore } from 'vuex'
