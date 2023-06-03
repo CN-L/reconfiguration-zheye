@@ -46,13 +46,21 @@ export interface ColumnProps {
 interface ListProps<T> {
   [id: string] : T
 }
+interface GlobalColumns {
+  data: ListProps<ColumnProps>,
+  isLoaded: boolean
+}
+interface GlobalPosts {
+  data: ListProps<PostProps>,
+  isLoadedColumns: string[]
+}
 export interface GlobalDataProps {
   currentPost: PostProps,
   error: GlobalErrorProps,
   token: string,
   loading: boolean,
-  columns: ListProps<ColumnProps>,
-  posts: ListProps<PostProps>,
+  columns: GlobalColumns,
+  posts: GlobalPosts,
   user: UserProps
 }
 
@@ -79,7 +87,10 @@ const store = createStore<GlobalDataProps>({
     currentPost: {} as PostProps,
     token: localStorage.getItem('token') || '',
     loading: false,
-    columns: {},
+    columns: {
+      data: {},
+      isLoaded: false
+    },
     posts: {},
     user: {
       isLogin: false
