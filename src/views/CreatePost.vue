@@ -27,6 +27,9 @@
         <Editor :class="{'is-invalid': !editorStatus.isValid}" @blur="checkEditor" ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
         <div class="form-text invalid-feedback" v-if="!editorStatus.isValid">{{ editorStatus.message }}</div>
       </div>
+      <template v-slot:submit>
+        <button type="submit" class="btn btn-primary">{{ isEditMode ? '更新文章' : '新建文章' }}</button>
+      </template>
     </ValidateForm>
   </div>
 </template>

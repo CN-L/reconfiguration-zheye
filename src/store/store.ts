@@ -164,6 +164,8 @@ const store = createStore<GlobalDataProps>({
       const currentPost = state.posts.data[cid]
       if (!currentPost || !currentPost.content) {
         return getAndCommit(`/posts/${cid}`, 'fetchPost', commit)
+      } else {
+        return Promise.resolve({ data: currentPost })
       }
     },
     createPost ({ commit }, playLoad) {
