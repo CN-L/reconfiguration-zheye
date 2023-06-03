@@ -22,14 +22,14 @@
       </div>
       <div class="mb-3">
         <label for="" class="form-label">文章详情：</label>
-        <Editor :class="{'is-invalid': !editorStatus.isValid}" @blur="checkEditor" ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
+        <Editor v-if="(isEditMode && contentVal) || !isEditMode" :class="{'is-invalid': !editorStatus.isValid}" @blur="checkEditor" ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
         <div class="form-text invalid-feedback" v-if="!editorStatus.isValid">{{ editorStatus.message }}</div>
       </div>
     </ValidateForm>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive } from 'vue'
+import { defineComponent, ref, onMounted, reactive, defineAsyncComponent } from 'vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import { useStore } from 'vuex'
@@ -38,7 +38,7 @@ import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store/st
 import Uploader from '@/components/Uploader.vue'
 import { beforeUploadCheck } from '@/help'
 import createMessage from '@/hooks/createMessage'
-import Editor from '@/components/Editor.vue'
+// import Editor from '@/components/Editor.vue'
 import EasyMDE, { Options } from 'easymde'
 interface EditorInstance {
   clear: () => void,
@@ -160,7 +160,7 @@ export default defineComponent({
     }
   },
   components: {
-    Editor,
+    Editor: defineAsyncComponent(() => import('@/components/Editor.vue')),
     ValidateForm,
     ValidateInput,
     Uploader

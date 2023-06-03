@@ -24,19 +24,23 @@ export default defineComponent({
     const store = useStore()
     const router = useRouter()
     const route = useRoute()
-    const currentId = route.params.id
-    onMounted(() => {
-      store.dispatch('fetchColumn', currentId)
-      store.dispatch('fetchPosts', currentId)
+    const currentId = computed(() => {
+      store.dispatch('fetchColumn', route.params.id)
+      store.dispatch('fetchPosts', route.params.id)
+      return route.params.id
     })
+    // onMounted(() => {
+    //   store.dispatch('fetchColumn', currentId.value)
+    //   store.dispatch('fetchPosts', currentId.value)
+    // })
     const column = computed(() => {
-      const storeNew = store.getters.getColumnById(currentId) as ColumnProps
+      const storeNew = store.getters.getColumnById(currentId.value) as ColumnProps
       if (storeNew) {
         generateFitUrl(storeNew, 100, 100)
       }
       return storeNew
     })
-    const list = computed(() => store.getters.getPostsByCid(currentId))
+    const list = computed(() => store.getters.getPostsByCid(currentId.value))
     console.log(list, 'list')
     return {
       router,
