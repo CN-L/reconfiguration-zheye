@@ -1,7 +1,7 @@
 <template>
   <div class="vue-easymde-editor">
     <textarea ref="textAreaRef" id="my-text-area"></textarea>
-    <input type="text" v-bind="$attrs">
+    <!-- <input type="text" v-bind="$attrs"> -->
   </div>
 </template>
 <script lang="ts" setup :inheritAttrs="true">
