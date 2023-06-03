@@ -37,6 +37,7 @@ export default defineComponent({
       return storeNew
     })
     const list = computed(() => store.getters.getPostsByCid(currentId))
+    console.log(list, 'list')
     return {
       router,
       route,

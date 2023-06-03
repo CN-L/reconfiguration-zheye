@@ -181,12 +181,12 @@ const store = createStore<GlobalDataProps>({
       }
     },
     async fetchColumn ({ commit, state }, cid) {
-      if (state.columns.data[cid]) {
+      if (!state.columns.data[cid]) {
         return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
       }
     },
-    async fetchPosts ({ commit }, cid) {
-      if (!this.state.posts.isLoadedColumns.includes(cid)) {
+    async fetchPosts ({ commit, state }, cid) {
+      if (!state.posts.isLoadedColumns.includes(cid)) {
         return asyncAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit, { method: 'get' }, cid)
       }
     },
@@ -200,7 +200,9 @@ const store = createStore<GlobalDataProps>({
   getters: {
     getColumns: (state) => objtToArray(state.columns.data),
     getColumnById: (state) => (id: string) => state.columns.data[id],
-    getPostsByCid: state => (cid: string) => objtToArray(state.posts.data),
+    getPostsByCid: state => (cid: string) => {
+      return objtToArray(state.posts.data).filter(post => post.column === cid)
+    },
     getCurrentPost: state => (id: string) => state.posts.data[id]
   }
 })
