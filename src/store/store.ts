@@ -74,9 +74,13 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
   commit(mutationName, data)
   return data
 }
-const asyncAndCommit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig = { method: 'get' }) => {
+const asyncAndCommit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig = { method: 'get' }, extraData?: any) => {
   const { data } = await axios(url, { ...config })
-  commit(mutationName, data)
+  if (extraData) {
+    commit(mutationName, { data, extraData })
+  } else {
+    commit(mutationName, data)
+  }
   return data
 }
 const store = createStore<GlobalDataProps>({
@@ -122,8 +126,9 @@ const store = createStore<GlobalDataProps>({
     fetchColumn (state, rowData) {
       state.columns.data[rowData._id] = rowData.data
     },
-    fetchPosts (state, rowData) {
-      state.posts.data = arrToObjt(rowData.data.list)
+    fetchPosts (state, { data: rowData, extraData: columnId }) {
+      state.posts.data = { ...state.posts.data, ...arrToObjt(rowData.data.list) }
+      state.posts.isLoadedColumns.push(columnId)
     },
     fetchCurrentUser (state, rowData) {
       state.user = {
@@ -155,8 +160,10 @@ const store = createStore<GlobalDataProps>({
     deletePost ({ commit }, id) {
       return asyncAndCommit(`/posts/${id}`, 'deletePost', commit, { method: 'delete' })
     },
-    fetchPost ({ commit }, cid) {
-      return getAndCommit(`/posts/${cid}`, 'fetchPost', commit)
+    fetchPost ({ state, commit }, cid) {
+      if (!state.posts.data[cid]) {
+        return getAndCommit(`/posts/${cid}`, 'fetchPost', commit)
+      }
     },
     createPost ({ commit }, playLoad) {
       return postAndCommit('/posts', 'createPost', commit, playLoad)
@@ -178,8 +185,10 @@ const store = createStore<GlobalDataProps>({
         return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
       }
     },
-    async fetchPosts (context, cid) {
-      getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', context.commit)
+    async fetchPosts ({ commit }, cid) {
+      if (!this.state.posts.isLoadedColumns.includes(cid)) {
+        return asyncAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit, { method: 'get' }, cid)
+      }
     },
     // 组合登陆和获取当前用户信息的acions
     loginAndFetch ({ dispatch }, playLoad) {
