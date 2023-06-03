@@ -1,11 +1,10 @@
 <template>
-  <!-- {{ props.modelValue }} -->
-  <!-- {{ innerValue }} -->
   <div class="vue-easymde-editor">
     <textarea ref="textAreaRef" id="my-text-area"></textarea>
+    <input type="text" v-bind="$attrs">
   </div>
 </template>
-<script lang="ts" setup>
+<script lang="ts" setup :inheritAttrs="true">
 import { onMounted, defineEmits, watch, ref, defineProps, onUnmounted, defineExpose, nextTick } from 'vue'
 import EasyMDE, { Options } from 'easymde'
 interface EditorProps {
@@ -29,7 +28,7 @@ watch(() => props.modelValue, (newVal) => {
 const textAreaRef = ref(null)
 onMounted(async () => {
   // const vNode = document.getElementById('my-text-area') as HTMLTextAreaElement
-  console.log(textAreaRef)
+  console.log(innerValue.value, '90')
   if (textAreaRef.value) {
     const config:Options = {
       ...(props.options || {}),
