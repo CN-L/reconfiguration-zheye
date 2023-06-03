@@ -1,4 +1,6 @@
 <template>
+  <!-- {{ props.modelValue }} -->
+  <!-- {{ innerValue }} -->
   <div class="vue-easymde-editor">
     <textarea ref="textAreaRef" id="my-text-area"></textarea>
   </div>

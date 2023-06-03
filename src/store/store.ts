@@ -93,7 +93,7 @@ const store = createStore<GlobalDataProps>({
       state.posts[data._id] = data
     },
     fetchPost (state, rowData) {
-      state.posts[rowData.id] = rowData.data
+      state.currentPost = rowData.data // 暂不使用对象形式，excerpt和content内容不一致 刷新也会丢失数据
     },
     setError (state, e: GlobalErrorProps) {
       state.error = e

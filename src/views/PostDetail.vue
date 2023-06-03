@@ -1,5 +1,4 @@
 <template>
-  {{ currentPost.author }}
 <div class="post-detail-page w-100 mx-auto">
   <div class="post-detail-container">
     <div class="header-image-container text-center rounded">
@@ -46,7 +45,7 @@ export default defineComponent({
     const router = useRouter()
     const currentId = route.params.id
     const store = useStore<GlobalDataProps>()
-    const currentPost = computed<PostProps>(() => store.getters.getCurrentPost(currentId))
+    const currentPost = computed<PostProps>(() => store.state.currentPost)
     const imgInfo = ref()
     onMounted(() => {
       store.dispatch('fetchPost', currentId).then(post => {
@@ -58,11 +57,9 @@ export default defineComponent({
     })
     const showEditArea = computed(() => {
       const { isLogin, _id } = store.state.user
-      console.log(currentPost.value)
       if (currentPost.value && currentPost.value.author && isLogin) {
-        const postAuthor = currentPost.value.author
-        console.log(postAuthor, _id)
-        return postAuthor === _id
+        const postAuthor = currentPost.value.author as UserProps
+        return postAuthor._id === _id
       }
       return null
     })
