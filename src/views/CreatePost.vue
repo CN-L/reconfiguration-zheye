@@ -23,7 +23,7 @@
       <div class="mb-3">
         <label for="" class="form-label">文章详情：</label>
         <!-- 渲染文章详情markdown可使用 v-if="(isEditMode && contentVal) || !isEditMode" -->
-        <!-- 随之而来的问题是获取不到此组件的实例-->
+        <!-- 随之而来的问题是onMouted的时候可能获取不到此组件的实例-->
         <Editor :class="{'is-invalid': !editorStatus.isValid}" @blur="checkEditor" ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
         <div class="form-text invalid-feedback" v-if="!editorStatus.isValid">{{ editorStatus.message }}</div>
       </div>
@@ -98,6 +98,7 @@ export default defineComponent({
     const titleVal = ref()
     const contentVal = ref('')
     const onFormSubmit = (result: boolean) => {
+      console.log(editorRef.value?.getMDEInstance())
       checkEditor()
       if (result && editorStatus.isValid) {
         const { column, _id } = store.state.user
