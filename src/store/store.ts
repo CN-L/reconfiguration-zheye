@@ -91,17 +91,17 @@ const store = createStore<GlobalDataProps>({
       data: {},
       isLoaded: false
     },
-    posts: {},
+    posts: { data: {}, isLoadedColumns: [] },
     user: {
       isLogin: false
     }
   },
   mutations: {
     deletePost (state, { data }) {
-      delete state.posts[data._id]
+      delete state.posts.data[data._id]
     },
     updatePost (state, { data }) {
-      state.posts[data._id] = data
+      state.posts.data[data._id] = data
     },
     fetchPost (state, rowData) {
       state.currentPost = rowData.data // 暂不使用对象形式，excerpt和content内容不一致 刷新也会丢失数据
@@ -113,16 +113,17 @@ const store = createStore<GlobalDataProps>({
       state.loading = status
     },
     createPost (state, newpost) {
-      state.posts[newpost._id] = newpost
+      state.posts.data[newpost._id] = newpost
     },
     fetchColumns (state, rowData) {
-      state.columns = arrToObjt(rowData.data.list)
+      state.columns.data = arrToObjt(rowData.data.list)
+      state.columns.isLoaded = true
     },
     fetchColumn (state, rowData) {
-      state.columns[rowData._id] = rowData.data
+      state.columns.data[rowData._id] = rowData.data
     },
     fetchPosts (state, rowData) {
-      state.posts = arrToObjt(rowData.data.list)
+      state.posts.data = arrToObjt(rowData.data.list)
     },
     fetchCurrentUser (state, rowData) {
       state.user = {
@@ -167,11 +168,15 @@ const store = createStore<GlobalDataProps>({
     fetchCurrentUser ({ commit }) {
       return getAndCommit('/user/current', 'fetchCurrentUser', commit)
     },
-    async fetchColumns (context) {
-      getAndCommit('/columns', 'fetchColumns', context.commit)
+    async fetchColumns ({ state, commit }) {
+      if (!state.columns.isLoaded) {
+        getAndCommit('/columns', 'fetchColumns', commit)
+      }
     },
-    async fetchColumn (context, cid) {
-      getAndCommit(`/columns/${cid}`, 'fetchColumn', context.commit)
+    async fetchColumn ({ commit, state }, cid) {
+      if (state.columns.data[cid]) {
+        return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
+      }
     },
     async fetchPosts (context, cid) {
       getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', context.commit)
@@ -184,10 +189,10 @@ const store = createStore<GlobalDataProps>({
     }
   },
   getters: {
-    getColumns: (state) => objtToArray(state.columns),
-    getColumnById: (state) => (id: string) => state.columns[id],
-    getPostsByCid: state => (cid: string) => objtToArray(state.posts),
-    getCurrentPost: state => (id: string) => state.posts[id]
+    getColumns: (state) => objtToArray(state.columns.data),
+    getColumnById: (state) => (id: string) => state.columns.data[id],
+    getPostsByCid: state => (cid: string) => objtToArray(state.posts.data),
+    getCurrentPost: state => (id: string) => state.posts.data[id]
   }
 })
 export default store

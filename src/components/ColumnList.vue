@@ -30,7 +30,13 @@ export default defineComponent({
             url: require('@/assets/colmun.webp')
           }
         } else {
-          item.avatar.url = item.avatar.url + '?x-oss-process=image/resize,m_fixed,h_50,w_50'
+          item = {
+            ...item,
+            avatar: {
+              ...item.avatar,
+              url: item.avatar.url + '?x-oss-process=image/resize,m_fixed,h_50,w_50'
+            }
+          }
         }
         return item
       })

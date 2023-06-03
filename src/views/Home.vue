@@ -26,7 +26,6 @@ export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const list = computed(() => store.getters.getColumns)
-    console.log(list.value, '你说啥')
     onMounted(() => {
       store.dispatch('fetchColumns')
     })
