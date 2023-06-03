@@ -13,6 +13,12 @@
     </section>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
     <ColumnList :list="list"></ColumnList>
+    <button
+      class="btn btn-outline-primary mt-2 mb-5 mx-auto btn-block w-25 d-block"
+       @click="loadMorePage" v-if="!isLastPage"
+    >
+      加载更多
+    </button>
   </div>
 </template>
 <script lang="ts">
@@ -21,16 +27,21 @@ import ColumnList from '@/components/ColumnList.vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store/store'
 import Uploader from '@/components/Uploader.vue'
+import useLoadMore from '@/hooks/useLoadMore'
 export default defineComponent({
   name: 'homeView',
   setup () {
     const store = useStore<GlobalDataProps>()
     const list = computed(() => store.getters.getColumns)
+    const total = computed(() => store.state.columns.total)
+    const { loadMorePage, isLastPage } = useLoadMore('fetchColumns', total, { pageSize: 3, currentPage: 2 })
     onMounted(() => {
-      store.dispatch('fetchColumns')
+      store.dispatch('fetchColumns', { pageSize: 3 })
     })
     return {
-      list
+      list,
+      isLastPage,
+      loadMorePage
     }
   },
   components: {

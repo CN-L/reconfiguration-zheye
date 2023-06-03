@@ -48,7 +48,8 @@ interface ListProps<T> {
 }
 interface GlobalColumns {
   data: ListProps<ColumnProps>,
-  isLoaded: boolean
+  isLoaded: boolean,
+  total: number
 }
 interface GlobalPosts {
   data: ListProps<PostProps>,
@@ -93,7 +94,8 @@ const store = createStore<GlobalDataProps>({
     loading: false,
     columns: {
       data: {},
-      isLoaded: false
+      isLoaded: false,
+      total: 0
     },
     posts: { data: {}, isLoadedColumns: [] },
     user: {
@@ -120,8 +122,13 @@ const store = createStore<GlobalDataProps>({
       state.posts.data[newpost._id] = newpost
     },
     fetchColumns (state, rowData) {
-      state.columns.data = arrToObjt(rowData.data.list)
-      state.columns.isLoaded = true
+      const { data } = state.columns
+      const { list, count } = rowData.data
+      state.columns = {
+        data: { ...data, ...arrToObjt(list) },
+        isLoaded: true,
+        total: count
+      }
     },
     fetchColumn (state, rowData) {
       state.columns.data[rowData._id] = rowData.data
@@ -178,10 +185,11 @@ const store = createStore<GlobalDataProps>({
     fetchCurrentUser ({ commit }) {
       return getAndCommit('/user/current', 'fetchCurrentUser', commit)
     },
-    async fetchColumns ({ state, commit }) {
-      if (!state.columns.isLoaded) {
-        getAndCommit('/columns', 'fetchColumns', commit)
-      }
+    async fetchColumns ({ state, commit }, params) {
+      const { currentPage = 1, pageSize = 5 } = params
+      // if (!state.columns.isLoaded) {
+      asyncAndCommit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
+      // }
     },
     async fetchColumn ({ commit, state }, cid) {
       if (!state.columns.data[cid]) {

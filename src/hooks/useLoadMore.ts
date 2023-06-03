@@ -4,8 +4,9 @@ interface LoadParams {
   currentPage: number,
   pageSize: number
 }
-const store = useStore()
 const useLoadMore = (actionName: string, total: ComputedRef<number>, params: LoadParams = { currentPage: 1, pageSize: 5 }) => {
+  const store = useStore()
+  console.log(store, 'store')
   const currentPage = ref(params.currentPage)
   const requestParams = {
     currentPage: currentPage.value,
