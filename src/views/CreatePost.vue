@@ -23,7 +23,7 @@
       <div class="mb-3">
         <label for="" class="form-label">文章详情：</label>
         <!-- 渲染文章详情markdown可使用 v-if="(isEditMode && contentVal) || !isEditMode" -->
-        <!-- 随之而来的问题是获取不到此组件的实例，只能在其为true时候才能获得到 -->
+        <!-- 随之而来的问题是获取不到此组件的实例-->
         <Editor :class="{'is-invalid': !editorStatus.isValid}" @blur="checkEditor" ref="editorRef" :options="editorOptions" v-model="contentVal"></Editor>
         <div class="form-text invalid-feedback" v-if="!editorStatus.isValid">{{ editorStatus.message }}</div>
       </div>
@@ -40,7 +40,7 @@ import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store/st
 import Uploader from '@/components/Uploader.vue'
 import { beforeUploadCheck } from '@/help'
 import createMessage from '@/hooks/createMessage'
-// import Editor from '@/components/Editor.vue'
+import Editor from '@/components/Editor.vue'
 import EasyMDE, { Options } from 'easymde'
 interface EditorInstance {
   clear: () => void,
@@ -162,7 +162,7 @@ export default defineComponent({
     }
   },
   components: {
-    Editor: defineAsyncComponent(() => import('@/components/Editor.vue')),
+    Editor,
     ValidateForm,
     ValidateInput,
     Uploader

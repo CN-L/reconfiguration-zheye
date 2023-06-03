@@ -26,7 +26,7 @@ watch(() => props.modelValue, (newVal) => {
   }
 }, { immediate: true })
 const textAreaRef = ref(null)
-onMounted(async () => {
+onMounted(() => {
   // const vNode = document.getElementById('my-text-area') as HTMLTextAreaElement
   console.log(innerValue.value, '90')
   if (textAreaRef.value) {
