@@ -161,7 +161,8 @@ const store = createStore<GlobalDataProps>({
       return asyncAndCommit(`/posts/${id}`, 'deletePost', commit, { method: 'delete' })
     },
     fetchPost ({ state, commit }, cid) {
-      if (!state.posts.data[cid]) {
+      const currentPost = state.posts.data[cid]
+      if (!currentPost || !currentPost.content) {
         return getAndCommit(`/posts/${cid}`, 'fetchPost', commit)
       }
     },
