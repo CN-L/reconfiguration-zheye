@@ -19,6 +19,7 @@ const router = createRouter({
     {
       path: '/column/:id',
       name: 'column',
+      meta: { requiredLogin: true },
       component: () => import('@/views/ColumnDetail.vue')
     },
     {

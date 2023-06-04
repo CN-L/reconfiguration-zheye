@@ -12,7 +12,7 @@ const useLoadMore = (actionName: string, total: ComputedRef<number>, params: Loa
   const requestParams = computed(() => {
     return {
       ...params,
-      currentPage: currentPage.value + 1
+      currentPage: currentPage.value * 1
     }
   })
   // function to trigger load more
