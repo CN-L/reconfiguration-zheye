@@ -12,6 +12,7 @@
       </div>
     </section>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
+    {{ list.length }}
     <ColumnList :list="list"></ColumnList>
     <button
       class="btn btn-outline-primary mt-2 mb-5 mx-auto btn-block w-25 d-block"
@@ -34,7 +35,8 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const list = computed(() => store.getters.getColumns)
     const total = computed(() => store.state.columns.total)
-    const { loadMorePage, isLastPage } = useLoadMore('fetchColumns', total, { pageSize: 3, currentPage: 2 })
+    const currentPage = computed(() => store.state.columns.currentPage)
+    const { loadMorePage, isLastPage } = useLoadMore('fetchColumns', total, { pageSize: 3, currentPage: (currentPage.value ? currentPage.value + 1 : 2) })
     onMounted(() => {
       store.dispatch('fetchColumns', { pageSize: 3 })
     })

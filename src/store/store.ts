@@ -48,12 +48,13 @@ interface ListProps<T> {
 }
 interface GlobalColumns {
   data: ListProps<ColumnProps>,
-  isLoaded: boolean,
-  total: number
+  // isLoaded: boolean,
+  total: number,
+  currentPage: number
 }
 interface GlobalPosts {
   data: ListProps<PostProps>,
-  isLoadedColumns: string[]
+  isLoadedColumns: ListProps<{total? :number, currentPage?: number, columnId?: string}>
 }
 export interface GlobalDataProps {
   currentPost: PostProps,
@@ -94,10 +95,10 @@ const store = createStore<GlobalDataProps>({
     loading: false,
     columns: {
       data: {},
-      isLoaded: false,
-      total: 0
+      total: 0,
+      currentPage: 0
     },
-    posts: { data: {}, isLoadedColumns: [] },
+    posts: { data: {}, isLoadedColumns: {} },
     user: {
       isLogin: false
     }
@@ -123,10 +124,12 @@ const store = createStore<GlobalDataProps>({
     },
     fetchColumns (state, rowData) {
       const { data } = state.columns
-      const { list, count } = rowData.data
+      const { list, count, currentPage } = rowData.data
+      console.log(data, 'data')
+      console.log(list, 'list')
       state.columns = {
         data: { ...data, ...arrToObjt(list) },
-        isLoaded: true,
+        currentPage: currentPage * 1,
         total: count
       }
     },
@@ -134,8 +137,16 @@ const store = createStore<GlobalDataProps>({
       state.columns.data[rowData._id] = rowData.data
     },
     fetchPosts (state, { data: rowData, extraData: columnId }) {
-      state.posts.data = { ...state.posts.data, ...arrToObjt(rowData.data.list) }
-      state.posts.isLoadedColumns.push(columnId)
+      const { list, count, currentPage } = rowData.data
+      state.posts.isLoadedColumns[columnId] = {
+        currentPage: currentPage,
+        total: count,
+        columnId: columnId
+      }
+      state.posts.data = { ...state.posts.data, ...arrToObjt(list) }
+      // const { list, count, currentPage } = rowData.data
+      // state.posts.data = { ...state.posts.data, ...arrToObjt(rowData.data.list) }
+      // state.posts.isLoadedColumns.push(columnId)
     },
     fetchCurrentUser (state, rowData) {
       state.user = {
@@ -187,17 +198,25 @@ const store = createStore<GlobalDataProps>({
     },
     async fetchColumns ({ state, commit }, params) {
       const { currentPage = 1, pageSize = 5 } = params
-      // if (!state.columns.isLoaded) {
-      asyncAndCommit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
-      // }
+      if (state.columns.currentPage < currentPage) {
+        return asyncAndCommit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
+      }
     },
     async fetchColumn ({ commit, state }, cid) {
       if (!state.columns.data[cid]) {
         return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
       }
     },
+    // async fetchPosts ({ commit, state }, cid, params) {
+    //   const { currentPage = 1, pageSize = 5 } = params
+    //   const hasOwnProperty = Object.prototype.hasOwnProperty
+    //   if (!hasOwnProperty.call(state.posts.isLoadedColumns, cid)) {
+    //     return asyncAndCommit(`/columns/${cid}/posts?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchPosts', commit, { method: 'get' }, cid)
+    //   }
+    // },
     async fetchPosts ({ commit, state }, cid) {
-      if (!state.posts.isLoadedColumns.includes(cid)) {
+      const hasOwnProperty = Object.prototype.hasOwnProperty
+      if (!hasOwnProperty.call(state.posts.isLoadedColumns, cid)) {
         return asyncAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit, { method: 'get' }, cid)
       }
     },
