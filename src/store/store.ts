@@ -43,10 +43,10 @@ export interface ColumnProps {
   avatar?: ImageProps;
   description: string;
 }
-interface ListProps<T> {
+export interface ListProps<T> {
   [id: string] : T
 }
-interface GlobalColumns {
+export interface GlobalColumns {
   data: ListProps<ColumnProps>,
   // isLoaded: boolean,
   total: number,
@@ -54,6 +54,7 @@ interface GlobalColumns {
 }
 interface GlobalPosts {
   data: ListProps<PostProps>,
+  // posts: { data: ListProps<PostProps>; loadedColumns: string[] };
   isLoadedColumns: ListProps<{total? :number, currentPage?: number, columnId?: string}>
 }
 export interface GlobalDataProps {
@@ -125,8 +126,6 @@ const store = createStore<GlobalDataProps>({
     fetchColumns (state, rowData) {
       const { data } = state.columns
       const { list, count, currentPage } = rowData.data
-      console.log(data, 'data')
-      console.log(list, 'list')
       state.columns = {
         data: { ...data, ...arrToObjt(list) },
         currentPage: currentPage * 1,
@@ -138,15 +137,13 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPosts (state, { data: rowData, extraData: columnId }) {
       const { list, count, currentPage } = rowData.data
-      state.posts.isLoadedColumns[columnId] = {
+      const { isLoadedColumns } = state.posts
+      isLoadedColumns[columnId] = {
         currentPage: currentPage,
         total: count,
         columnId: columnId
       }
       state.posts.data = { ...state.posts.data, ...arrToObjt(list) }
-      // const { list, count, currentPage } = rowData.data
-      // state.posts.data = { ...state.posts.data, ...arrToObjt(rowData.data.list) }
-      // state.posts.isLoadedColumns.push(columnId)
     },
     fetchCurrentUser (state, rowData) {
       state.user = {
@@ -202,22 +199,18 @@ const store = createStore<GlobalDataProps>({
         return asyncAndCommit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
       }
     },
-    async fetchColumn ({ commit, state }, cid) {
-      if (!state.columns.data[cid]) {
-        return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
-      }
-    },
-    // async fetchPosts ({ commit, state }, cid, params) {
-    //   const { currentPage = 1, pageSize = 5 } = params
-    //   const hasOwnProperty = Object.prototype.hasOwnProperty
-    //   if (!hasOwnProperty.call(state.posts.isLoadedColumns, cid)) {
-    //     return asyncAndCommit(`/columns/${cid}/posts?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchPosts', commit, { method: 'get' }, cid)
+    // async fetchColumn ({ commit, state }, cid) {
+    //   if (!state.columns.data[cid]) {
+    //     return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
     //   }
     // },
-    async fetchPosts ({ commit, state }, cid) {
+    async fetchPosts ({ commit, state }, params = {}) {
+      const { cid, currentPage = 1, pageSize = 5 } = params
+      const { isLoadedColumns } = state.posts
+      const loadedCurentPage = (isLoadedColumns[cid] && isLoadedColumns[cid].currentPage) || 0
       const hasOwnProperty = Object.prototype.hasOwnProperty
-      if (!hasOwnProperty.call(state.posts.isLoadedColumns, cid)) {
-        return asyncAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit, { method: 'get' }, cid)
+      if ((hasOwnProperty.call(isLoadedColumns, cid) && (loadedCurentPage < currentPage)) || !hasOwnProperty.call(isLoadedColumns, cid)) {
+        return asyncAndCommit(`/columns/${cid}/posts?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchPosts', commit, { method: 'get' }, cid)
       }
     },
     // 组合登陆和获取当前用户信息的acions
@@ -228,10 +221,24 @@ const store = createStore<GlobalDataProps>({
     }
   },
   getters: {
+    getPostsCountByCid: (state) => (cid: string) => {
+      if (state.posts.isLoadedColumns[cid]) {
+        return state.posts.isLoadedColumns[cid].total
+      } else {
+        return 0
+      }
+    },
     getColumns: (state) => objtToArray(state.columns.data),
     getColumnById: (state) => (id: string) => state.columns.data[id],
     getPostsByCid: state => (cid: string) => {
       return objtToArray(state.posts.data).filter(post => post.column === cid)
+    },
+    getPostsCurrentPageByCid: (state) => (cid: string) => {
+      if (state.posts.isLoadedColumns[cid]) {
+        return state.posts.isLoadedColumns[cid].currentPage
+      } else {
+        return 0
+      }
     },
     getCurrentPost: state => (id: string) => state.posts.data[id]
   }

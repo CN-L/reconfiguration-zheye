@@ -10,12 +10,12 @@
       </div>
     </div>
     <post-list :list="list"></post-list>
-    <!-- <button
+    <button
       class="btn btn-outline-primary mt-2 mb-5 mx-auto btn-block w-25 d-block"
        @click="loadMorePage" v-if="!isLastPage"
     >
       加载更多
-    </button> -->
+    </button>
   </div>
 </template>
 <script lang="ts">
@@ -23,38 +23,33 @@ import { defineComponent, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import PostList from '@/views/PostList.vue'
-import { ColumnProps } from '@/store/store'
-import { generateFitUrl } from '@/help'
-// import useLoadMore from '@/hooks/useLoadMore'
+import { ColumnProps, GlobalDataProps } from '@/store/store'
+import { generateFitUrl, addColumnAvatar } from '@/help'
+import useLoadMore from '@/hooks/useLoadMore'
 export default defineComponent({
   setup () {
-    const store = useStore()
+    const store = useStore<GlobalDataProps>()
     const router = useRouter()
     const route = useRoute()
     const currentId = computed(() => {
-      // store.dispatch('fetchColumn', route.params.id)
-      store.dispatch('fetchPosts', route.params.id)
+      store.dispatch('fetchPosts', { cid: route.params.id, params: { pageSize: 3 } })
       return route.params.id
     })
-    // onMounted(() => {
-    //   store.dispatch('fetchColumn', currentId.value)
-    //   store.dispatch('fetchPosts', currentId.value)
-    // })
-
     const column = computed(() => {
-      const storeNew = store.getters.getColumnById(currentId.value) as ColumnProps
-      if (storeNew) {
-        generateFitUrl(storeNew, 100, 100)
+      const selectColumn = store.getters.getColumnById(currentId.value) as ColumnProps | undefined
+      if (selectColumn) {
+        addColumnAvatar(selectColumn, 100, 100)
       }
-      return storeNew
+      return selectColumn
     })
-    // const total = computed(() => store.state.columns.total)
-    // const currentPage = computed(() => store.state.columns.currentPage)
-    // const { loadMorePage, isLastPage } = useLoadMore('fetchColumns', total, { pageSize: 3, currentPage: (currentPage.value ? currentPage.value + 1 : 2) })
     const list = computed(() => store.getters.getPostsByCid(currentId.value))
-    console.log(list, 'list')
+    const count = computed(() => store.getters.getPostsCountByCid(currentId.value))
+    const currentPage = computed(() => store.getters.getPostsCurrentPageByCid(currentId.value))
+    const { loadMorePage, isLastPage } = useLoadMore('fetchPosts', count, { currentPage: currentPage.value, cid: currentId.value })
     return {
       router,
+      loadMorePage,
+      isLastPage,
       route,
       column,
       list
