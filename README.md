@@ -207,4 +207,15 @@ vite为何比vue-cli快（主要说的是开发环境）
 vue-cli：采用基于webpack打包工具,生产环境和开发环境差不多
 vite：生产环境采用的是Rollup，开发环境基于ES模块和原生浏览器支持
 ```
+项目中需要注意的地方：
+1.  使用异步组件时，用到才会加载，可能导致我们在omounted时候无法操作dom，v-if动态渲染也有这个问题
+2.  异步加载的数据props传给子组件内容，还未加载完毕，easyMDE的初始化就已经结束了，只得设置value
+3.  render可使VNode挂载真实dom节点上，这个官方未提及
+4.  注意v-if和v-show，动态控制子组件时v-if会重新渲染，但v-show不会，可能还是旧值
+5.  在组合式函数 script标签带setup，可直接在script添加inheritAttrs防止继承非props属性
+6.  注意使用静态数据和响应式数据，一些值变化静态数据可能还是旧值
+7.  props也可用于传递function 参考uploader组件
+8.  h函数和createVNode几乎一样都用于创建VNode
+9.  函数式组件参考message
+10. 注意getter妙用，参考在store.ts中的使用
 
