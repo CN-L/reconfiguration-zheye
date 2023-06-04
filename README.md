@@ -119,7 +119,7 @@ const vnode = <div>hello</div>
 const vnode = <div id={dynamicId}>hello, {username}</div>
 ```
 
-关于render函数：常见于虚拟dom渲染
+关于render函数：可用于虚拟dom挂载到指定真实dom节点上
 
 ```tsx
 <!-- 如果想使用mout进行挂载 那是createdApp创建出来的虚拟dom才能行-->
@@ -188,10 +188,10 @@ const iptRef = reactive({
 函数式组件适用于在代码逻辑中使用的组件
 ```
 
-注意：如果template使用了setup语法，想暴露组件的方法和属性,参考Editor组件
+注意：如果script使用组合式函数setup语法，想暴露组件的方法和属性（访问实例属性和方法
 
 ```vue
-那么我们可以使用defineExpose进行导出
+可使用defineExpose进行导出（参考Editor组件）
 ```
 
 关于开发环境和生产环境
@@ -204,7 +204,7 @@ const iptRef = reactive({
 vite为何比vue-cli快（主要说的是开发环境）
 
 ```vue
-vue-cli：采用的是webpack打包工具
-vite：采用的是Rollup，类似于过滤了掉落的树叶,使用浏览器的es modules
+vue-cli：采用基于webpack打包工具,生产环境和开发环境差不多
+vite：生产环境采用的是Rollup，开发环境基于ES模块和原生浏览器支持
 ```
 
