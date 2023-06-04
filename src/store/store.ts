@@ -231,6 +231,7 @@ const store = createStore<GlobalDataProps>({
     getColumns: (state) => objtToArray(state.columns.data),
     getColumnById: (state) => (id: string) => state.columns.data[id],
     getPostsByCid: state => (cid: string) => {
+      console.log(objtToArray(state.posts.data))
       return objtToArray(state.posts.data).filter(post => post.column === cid)
     },
     getPostsCurrentPageByCid: (state) => (cid: string) => {

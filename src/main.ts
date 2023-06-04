@@ -25,7 +25,7 @@ const options = {
 const darkmode = new Darkmode(options)
 darkmode.showWidget()
 // 替换 baseURL
-axios.defaults.baseURL = 'http://apis.imooc.com/api/'
+axios.defaults.baseURL = 'https://apis.imooc.com/api/'
 // 下面的 icode 值是从慕课网获取的 token 值，可以在课程右侧的项目接口校验码找到
 // Add a request interceptor
 const icode = '4CB97C9D7FB84B63'
