@@ -82,6 +82,6 @@ export default defineComponent({
   min-height: 500px;
 }
 .form-content {
-  opacity: 0.8;
+  opacity: 0.6;
 }
 </style>

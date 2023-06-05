@@ -3,7 +3,7 @@
     <div class="alert message-info fixed-top w-50 mx-auto d-flex justify-content-between mt-2"
       :class="classObject" v-if="isVisible">
       <span>{{message}}</span>
-      <button type="button" class="btn-close" aria-label="Close"></button>
+      <button type="button" @click="hide" class="btn-close" aria-label="Close"></button>
     </div>
   </teleport>
 </template>
