@@ -2,11 +2,11 @@
   <div class="login-page p-5 d-flex justify-content-center align-items-center">
     <ValidateForm class="w-50 h-50 form-content" @form-submit="onFormSubmit" @clear-inputs="onClear">
       <div class="mb-3">
-        <label class="form-label text-body-tertiary">电子邮箱</label>
+        <label class="form-label">电子邮箱</label>
         <ValidateInput placeholder="请输入邮箱地址" v-model="emailVal" :rules="emailRules"></ValidateInput>
       </div>
       <div class="mb-5">
-        <label class="form-label text-body-tertiary">密码</label>
+        <label class="form-label">密码</label>
         <ValidateInput type="password" placeholder="请输入密码" v-model="passWord" :rules="passwordRules"></ValidateInput>
       </div>
       <!-- 等同于v-slot:submit -->
@@ -73,14 +73,15 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 .login-page {
-  background-image: url('@/assets/1.jpg');
+  color: #fff;
+  background-image: url('@/assets/login.jpeg');
   background-size:cover;
   background-repeat: no-repeat;
   min-height: 500px;
 }
 .form-content {
-  opacity: 0.7;
+  opacity: 0.8;
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
-    <div class="signup-page mx-auto p-3 w-330">
-      <h5 class="my-4 text-center">注册者也账户</h5>
+  <div class="form-content w-100 d-flex justify-content-center align-items-center">
+    <div style="opacity: 0.8;" class="signup-page mx-auto p-3 w-50">
+      <h5 class="my-4 text-center">注册账户</h5>
       <validate-form @form-submit="onFormSubmit">
         <div class="mb-3">
           <label class="form-label">邮箱地址</label>
@@ -37,10 +38,14 @@
           />
         </div>
         <template #submit>
-          <button type="submit" class="btn btn-primary btn-block btn-large">注册新用户</button>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-block btn-large">注册新用户</button>
+          </div>
         </template>
       </validate-form>
     </div>
+  </div>
+
   </template>
 <script lang="ts">
 import { defineComponent, reactive } from 'vue'
@@ -111,3 +116,11 @@ export default defineComponent({
   }
 })
 </script>
+<style scoped>
+.form-content {
+  color: #fff;
+  background-image: url('@/assets/setup.jpeg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+</style>
