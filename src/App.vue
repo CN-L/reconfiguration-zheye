@@ -2,8 +2,12 @@
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
     <!-- <Vnode1 msg="我是你爹"></Vnode1> -->
-    <router-view></router-view>
+    <Transition name="fade">
+      <router-view></router-view>
+    </Transition>
     <GlobalFooter></GlobalFooter>
+    <!-- <button class="keyframs1" @click="cut = ! cut">点击过渡动画</button>
+    <div :class=" { transtion1: true, transtion2: cut}">测试数据transtion</div> -->
   </div>
 </template>
 
@@ -19,6 +23,7 @@ import Vnode1 from '@/components/Vnode'
 export default defineComponent({
   name: 'App',
   setup () {
+    const cut = ref(true)
     const store = useStore<GlobalDataProps>()
     const currentUser = computed(() => store.state.user)
     const isLoading = computed(() => store.state.loading)
@@ -30,6 +35,7 @@ export default defineComponent({
       }
     })
     return {
+      cut,
       error,
       currentUser,
       isLoading
@@ -45,4 +51,37 @@ export default defineComponent({
 </script>
 
 <style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translate(25px, -10px)
+}
+/* 测试过渡动画代码 */
+.transtion1 {
+ transform: translateX(-80px);
+ opacity: 0;
+ transition: all 0.5s linear;
+}
+.transtion2 {
+  opacity: 1;
+  transform: translateX(0);
+}
+.keyframs1 {
+  animation: yu 0.5s linear;
+}
+/* 测试keyframs动画 */
+@keyframes yu {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 </style>

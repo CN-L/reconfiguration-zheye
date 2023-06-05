@@ -1,6 +1,6 @@
 <template>
   <div class="login-page p-5 d-flex justify-content-center align-items-center">
-    <ValidateForm class="w-50 h-50" @form-submit="onFormSubmit" @clear-inputs="onClear">
+    <ValidateForm class="w-50 h-50 form-content" @form-submit="onFormSubmit" @clear-inputs="onClear">
       <div class="mb-3">
         <label class="form-label text-body-tertiary">电子邮箱</label>
         <ValidateInput placeholder="请输入邮箱地址" v-model="emailVal" :rules="emailRules"></ValidateInput>
@@ -81,6 +81,6 @@ export default defineComponent({
   min-height: 500px;
 }
 .form-content {
-  opacity: 0.8;
+  opacity: 0.7;
 }
 </style>
