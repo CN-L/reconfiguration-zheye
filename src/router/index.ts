@@ -29,16 +29,24 @@ const router = createRouter({
       component: () => import('@/views/CreatePost.vue')
     },
     {
-      path: '/setup',
-      name: 'setUp',
+      path: '/signUp',
+      name: 'SignUp',
       meta: { requiredLogin: false },
-      component: () => import('@/views/Setup.vue')
+      component: () => import('@/views/SignUp.vue')
     },
     {
       path: '/posts/:id',
       name: 'posts',
       meta: { requiredLogin: true },
       component: () => import('@/views/PostDetail.vue')
+    },
+    {
+      path: '/edit',
+      name: 'edit',
+      component: () => import('@/views/EditProfile.vue'),
+      meta: {
+        requiredLogin: true
+      }
     }
   ]
 })

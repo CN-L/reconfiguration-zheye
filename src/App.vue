@@ -2,9 +2,11 @@
   <div class="container">
     <GlobalHeader :user="currentUser"></GlobalHeader>
     <!-- <Vnode1 msg="我是你爹"></Vnode1> -->
-    <Transition name="fade">
-      <router-view></router-view>
-    </Transition>
+    <router-view v-slot="{ Component }">
+      <transition name="fade">
+        <component :is="Component" />
+      </transition>
+    </router-view>
     <GlobalFooter></GlobalFooter>
     <!-- <button class="keyframs1" @click="cut = ! cut">点击过渡动画</button>
     <div :class=" { transtion1: true, transtion2: cut}">测试数据transtion</div> -->
@@ -20,6 +22,7 @@ import Loader from './components/Loader.vue'
 import { GlobalDataProps } from './store/store'
 import createdMessage from '@/hooks/createMessage'
 import Vnode1 from '@/components/Vnode'
+import { useRoute } from 'vue-router'
 export default defineComponent({
   name: 'App',
   setup () {
@@ -50,13 +53,11 @@ export default defineComponent({
 })
 </script>
 
-<style>
-.fade-enter-active,
-.fade-leave-active {
+<style scoped>
+.fade-enter-active {
   transition: all 0.5s ease;
 }
-.fade-enter-from,
-.fade-leave-to {
+.fade-enter-from {
   opacity: 0;
   transform: translate(25px, -10px)
 }

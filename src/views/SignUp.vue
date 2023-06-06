@@ -119,7 +119,7 @@ export default defineComponent({
 <style scoped>
 .form-content {
   color: #fff;
-  background-image: url('@/assets/setup.jpeg');
+  background-image: url('@/assets/signUp.jpeg');
   background-repeat: no-repeat;
   background-size: cover;
 }
