@@ -58,6 +58,7 @@ interface GlobalPosts {
   isLoadedColumns: ListProps<{total? :number, currentPage?: number, columnId?: string}>
 }
 export interface GlobalDataProps {
+  columnsDetail: PostProps,
   currentPost: PostProps,
   error: GlobalErrorProps,
   token: string,
@@ -88,6 +89,7 @@ const asyncAndCommit = async (url: string, mutationName: string, commit: Commit,
 }
 const store = createStore<GlobalDataProps>({
   state: {
+    columnsDetail: {} as PostProps,
     error: {
       status: false
     },
@@ -157,6 +159,11 @@ const store = createStore<GlobalDataProps>({
       localStorage.setItem('token', JSON.parse(JSON.stringify(token)))
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
     },
+    userColumns (state, rowData) {
+      state.columnsDetail = {
+        ...rowData.data
+      }
+    },
     loginOut (state) {
       localStorage.clear()
       state.token = ''
@@ -166,6 +173,19 @@ const store = createStore<GlobalDataProps>({
     }
   },
   actions: {
+    // 更新个人资料信息
+    updatePersonal ({ commit }, { id, data }) {
+      console.log(id, data)
+      return asyncAndCommit(`/user/${id}`, 'fetchCurrentUser', commit, { method: 'patch', data })
+    },
+    // 更新专栏信息
+    updateMyPost ({ commit }, { id, data }) {
+      return asyncAndCommit(`/user/${id}`, 'userColumns', commit, { method: 'patch', data })
+    },
+    // 获取专栏详情
+    userColumnsDetail ({ commit }, id) {
+      return asyncAndCommit(`/columns/${id}`, 'userColumns', commit)
+    },
     updatePost ({ commit }, { id, payload }) {
       return asyncAndCommit(`/posts/${id}`, 'updatePost', commit, {
         method: 'patch',
@@ -199,11 +219,6 @@ const store = createStore<GlobalDataProps>({
         return asyncAndCommit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
       }
     },
-    // async fetchColumn ({ commit, state }, cid) {
-    //   if (!state.columns.data[cid]) {
-    //     return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
-    //   }
-    // },
     async fetchPosts ({ commit, state }, params = {}) {
       const { cid, currentPage = 1, pageSize = 5 } = params
       const { isLoadedColumns } = state.posts

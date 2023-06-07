@@ -48,7 +48,7 @@ export default defineComponent({
         fileStatus.value = 'success'
         upLoadedData.value = newValue
       }
-    })
+    }, { immediate: true })
     const upLoadedData = ref()
     const handleFileChage = (e: Event) => {
       const target = e.target as HTMLInputElement

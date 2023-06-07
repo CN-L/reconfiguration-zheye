@@ -30,7 +30,6 @@ watch(() => props.modelValue, (newVal) => {
 const textAreaRef = ref(null)
 onMounted(() => {
   // const vNode = document.getElementById('my-text-area') as HTMLTextAreaElement
-  console.log(innerValue.value, '90')
   if (textAreaRef.value) {
     const config:Options = {
       ...(props.options || {}),

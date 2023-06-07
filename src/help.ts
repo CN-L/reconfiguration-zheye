@@ -36,7 +36,7 @@ export function beforeUploadCheck (file: File, condition: ICondition) {
     error = 'size'
   }
   return {
-    passed: isVaildFormat && isVaildFormat,
+    passed: isVaildFormat && isVaildSize,
     error
   }
 }

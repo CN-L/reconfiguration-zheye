@@ -50,6 +50,7 @@ export default defineComponent({
       clearArray = []
     })
     return {
+      clearInputs,
       submitForm
     }
   }
