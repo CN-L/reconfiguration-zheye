@@ -9,6 +9,7 @@ export interface ResponseType<P = null> {
 }
 export interface GlobalErrorProps {
   status: boolean,
+  error?: string,
   message?: string
 }
 export interface ImageProps {
@@ -117,7 +118,10 @@ const store = createStore<GlobalDataProps>({
       state.currentPost = rowData.data // 暂不使用对象形式，excerpt和content内容不一致 刷新也会丢失数据
     },
     setError (state, e: GlobalErrorProps) {
-      state.error = e
+      state.error = {
+        ...e,
+        message: e.message || e.error
+      }
     },
     setLoading (state, status) {
       state.loading = status
