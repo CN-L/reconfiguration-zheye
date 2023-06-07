@@ -19,7 +19,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, onMounted } from 'vue'
+import { defineComponent, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import PostList from '@/views/PostList.vue'
@@ -32,16 +32,29 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const currentId = computed(() => {
+      store.dispatch('fetchColumns', route.params.id)
       store.dispatch('fetchPosts', { cid: route.params.id, params: { pageSize: 3 } })
       return route.params.id
     })
     const column = computed(() => {
+      store.dispatch('userColumnsDetail', store.state.user.column)
       const selectColumn = store.getters.getColumnById(currentId.value) as ColumnProps | undefined
       if (selectColumn) {
         addColumnAvatar(selectColumn, 100, 100)
       }
       return selectColumn
     })
+    // watch(()=> route.params, (params) => {
+    //   const jumpId = params && params.id
+    //   const column = store.state.user.column
+    //   if (jumpId && column && (jumpId === column)) {
+    //     // 重新发送请求，在 store 中有对应的缓存设置
+    //     store.dispatch('fetchColumn', jumpId)
+    //     store.dispatch('fetchPosts', { cid: jumpId })
+    //     // 重新赋值，这样 computed 会变化
+    //     currentId.value = params.id
+    //   }
+    // })
     const list = computed(() => store.getters.getPostsByCid(currentId.value))
     const count = computed(() => store.getters.getPostsCountByCid(currentId.value))
     const currentPage = computed(() => store.getters.getPostsCurrentPageByCid(currentId.value))
