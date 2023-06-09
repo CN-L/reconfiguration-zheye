@@ -7,6 +7,7 @@ import axios from 'axios'
 // 深色模式
 import Darkmode from 'darkmode-js'
 import 'easymde/dist/easymde.min.css' // css文件
+import { createPinia } from 'pinia'
 const options = {
   darkColor: '#222',
   bottom: '64px', // default: '32px'
@@ -55,7 +56,9 @@ axios.interceptors.response.use(config => {
   store.commit('setLoading', false)
   return Promise.reject(error)
 })
+const appPinia = createPinia()
 const app = createApp(App)
 app.use(store)
 app.use(router)
+app.use(appPinia)
 app.mount('#app')
