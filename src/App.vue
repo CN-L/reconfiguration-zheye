@@ -1,10 +1,8 @@
 <template>
-  {{ storeTest.doubleCount }}-{{ storeTest.doubleCountPlusOne }}
-  {{ selectColumn }}
+  <!-- {{ storeTest.doubleCount }}-{{ storeTest.doubleCountPlusOne }}-->
   <div class="container">
-    <h2>{{ storeTest.getDataById('123') }}</h2>
     <h1>{{ storeTest.data }}-{{ storeTest.total }}你说</h1>
-    <h3>{{ getDataById('123') }}</h3>
+    <!-- <h3>{{ getDataById('123') }}</h3> -->
     <GlobalHeader :user="currentUser"></GlobalHeader>
     <!-- <Vnode1 msg="我是你爹"></Vnode1> -->
     <router-view v-slot="{ Component }">
@@ -20,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { useTestStore } from '@/store/piniaTest'
+import { useTestStore, useTest2Store } from '@/store/piniaTest'
 import { computed, defineComponent, onMounted, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import GlobalHeader from '@/components/GlobalHeader.vue'
@@ -36,9 +34,9 @@ export default defineComponent({
   name: 'App',
   setup () {
     const cut = ref(true)
-    const storeTest = useTestStore()
+    const storeTest = useTest2Store()
     // 将state结构后变成响应式对象
-    const { data, getDataById } = storeToRefs(storeTest)
+    const { data } = storeToRefs(storeTest)
     const store = useStore<GlobalDataProps>()
     const currentUser = computed(() => store.state.user)
     const isLoading = computed(() => store.state.loading)
@@ -79,17 +77,17 @@ export default defineComponent({
       //   total: 20
       // })
     }
-    storeTest.increaseTotal()
-    const selectColumn = computed(() => storeTest.getDataById('123'))
+    // storeTest.increaseTotal()
+    // const selectColumn = computed(() => storeTest.getDataById('123'))
     return {
       data,
       cut,
       error,
       currentUser,
       storeTest,
-      getDataById, // 取值方式1
+      // getDataById, // 取值方式1
       updateStore,
-      selectColumn,
+      // selectColumn,
       isLoading
     }
   },
