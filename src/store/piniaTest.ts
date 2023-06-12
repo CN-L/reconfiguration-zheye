@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { ColumnProps } from '@/store/store'
+import { ColumnProps, ResponseType } from '@/store/store'
+import axios from 'axios'
 interface TestProps {
   data: ColumnProps[],
   total: number
@@ -11,6 +12,21 @@ export const useTestStore = defineStore('test', {
     return {
       data: [],
       total: 10
+    }
+  },
+  actions: {
+    increaseTotal () {
+      this.total++
+    },
+    async fetchColumns (params: any = {}) {
+      const { currentPage = 1, pageSize = 10 } = params
+      const { data } = await axios.get<ResponseType<{ count: number, list: ColumnProps[]}>>(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`)
+      const { count, list } = data.data
+      this.$patch({
+        total: count,
+        data: list
+      })
+      return list
     }
   },
   getters: {

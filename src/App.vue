@@ -3,7 +3,7 @@
   {{ selectColumn }}
   <div class="container">
     <h2>{{ storeTest.getDataById('123') }}</h2>
-    <h1>{{ storeTest.data }}-{{ storeTest.total }}</h1>
+    <h1>{{ storeTest.data }}-{{ storeTest.total }}你说</h1>
     <h3>{{ getDataById('123') }}</h3>
     <GlobalHeader :user="currentUser"></GlobalHeader>
     <!-- <Vnode1 msg="我是你爹"></Vnode1> -->
@@ -52,18 +52,20 @@ export default defineComponent({
 
     // pinia
     const updateStore = () => {
+      const data1 = storeTest.fetchColumns()
+      console.log(data1)
       // storeTest.data.push({
       //   _id: '123',
       //   title: '你说啥',
       //   description: '我说我说你真的爱我'
       // })
       // storeTest.total++
-      storeTest.$patch((state) => {
-        state.data.push({
-          _id: '123',
-          title: '你说啥',
-          description: '我说我说你真的爱我'
-        })
+      // storeTest.$patch((state) => {
+      //   state.data.push({
+      //     _id: '123',
+      //     title: '你说啥',
+      //     description: '我说我说你真的爱我'
+      //   })
       // storeTest.total = 20
       // })
       // storeTest.$patch({ total: 24 }
@@ -75,8 +77,9 @@ export default defineComponent({
       // storeTest.$patch({
       //   data: [],
       //   total: 20
-      })
+      // })
     }
+    storeTest.increaseTotal()
     const selectColumn = computed(() => storeTest.getDataById('123'))
     return {
       data,
