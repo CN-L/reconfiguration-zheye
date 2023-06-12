@@ -1,5 +1,10 @@
 <template>
+  {{ storeTest.doubleCount }}-{{ storeTest.doubleCountPlusOne }}
+  {{ selectColumn }}
   <div class="container">
+    <h2>{{ storeTest.getDataById('123') }}</h2>
+    <h1>{{ storeTest.data }}-{{ storeTest.total }}</h1>
+    <h3>{{ getDataById('123') }}</h3>
     <GlobalHeader :user="currentUser"></GlobalHeader>
     <!-- <Vnode1 msg="我是你爹"></Vnode1> -->
     <router-view v-slot="{ Component }">
@@ -8,12 +13,14 @@
       </transition>
     </router-view>
     <GlobalFooter></GlobalFooter>
+    <button @click="updateStore">更新pinia</button>
     <!-- <button class="keyframs1" @click="cut = ! cut">点击过渡动画</button>
     <div :class=" { transtion1: true, transtion2: cut}">测试数据transtion</div> -->
   </div>
 </template>
 
 <script lang="ts">
+import { useTestStore } from '@/store/piniaTest'
 import { computed, defineComponent, onMounted, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import GlobalHeader from '@/components/GlobalHeader.vue'
@@ -22,11 +29,16 @@ import Loader from './components/Loader.vue'
 import { GlobalDataProps } from './store/store'
 import createdMessage from '@/hooks/createMessage'
 import Vnode1 from '@/components/Vnode'
+import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
+import { testPosts } from './testData'
 export default defineComponent({
   name: 'App',
   setup () {
     const cut = ref(true)
+    const storeTest = useTestStore()
+    // 将state结构后变成响应式对象
+    const { data, getDataById } = storeToRefs(storeTest)
     const store = useStore<GlobalDataProps>()
     const currentUser = computed(() => store.state.user)
     const isLoading = computed(() => store.state.loading)
@@ -37,10 +49,44 @@ export default defineComponent({
         createdMessage(message, 'error', 2000)
       }
     })
+
+    // pinia
+    const updateStore = () => {
+      // storeTest.data.push({
+      //   _id: '123',
+      //   title: '你说啥',
+      //   description: '我说我说你真的爱我'
+      // })
+      // storeTest.total++
+      storeTest.$patch((state) => {
+        state.data.push({
+          _id: '123',
+          title: '你说啥',
+          description: '我说我说你真的爱我'
+        })
+      // storeTest.total = 20
+      // })
+      // storeTest.$patch({ total: 24 }
+      // storeTest.$reset() // 重置
+      // 订阅
+      // storeTest.$subscribe((mutation, state) => {
+      //   console.log('sub', mutation, state)
+      // })
+      // storeTest.$patch({
+      //   data: [],
+      //   total: 20
+      })
+    }
+    const selectColumn = computed(() => storeTest.getDataById('123'))
     return {
+      data,
       cut,
       error,
       currentUser,
+      storeTest,
+      getDataById, // 取值方式1
+      updateStore,
+      selectColumn,
       isLoading
     }
   },
