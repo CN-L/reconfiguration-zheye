@@ -1,7 +1,7 @@
 <template>
   <!-- {{ storeTest.doubleCount }}-{{ storeTest.doubleCountPlusOne }}-->
   <div class="container">
-    <h1>{{ storeTest.data }}-{{ storeTest.total }}你说</h1>
+    <!-- <h1>{{ storeTest.data }}-{{ storeTest.total }}你说</h1> -->
     <!-- <h3>{{ getDataById('123') }}</h3> -->
     <GlobalHeader :user="currentUser"></GlobalHeader>
     <!-- <Vnode1 msg="我是你爹"></Vnode1> -->
@@ -11,7 +11,7 @@
       </transition>
     </router-view>
     <GlobalFooter></GlobalFooter>
-    <button @click="updateStore">更新pinia</button>
+    <!-- <button @click="updateStore">更新pinia</button> -->
     <!-- <button class="keyframs1" @click="cut = ! cut">点击过渡动画</button>
     <div :class=" { transtion1: true, transtion2: cut}">测试数据transtion</div> -->
   </div>

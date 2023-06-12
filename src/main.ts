@@ -8,23 +8,6 @@ import axios from 'axios'
 import Darkmode from 'darkmode-js'
 import 'easymde/dist/easymde.min.css' // css文件
 import { createPinia } from 'pinia'
-const options = {
-  darkColor: '#222',
-  bottom: '64px', // default: '32px'
-  right: '32px', // default: '32px'
-  left: 'unset', // default: 'unset'
-  time: '0.5s', // default: '0.3s'
-  mixColor: '#fff', // default: '#fff'
-  backgroundColor: '#fff', // default: '#fff'
-  buttonColorDark: '#100f2c', // default: '#100f2c'
-  buttonColorLight: '#fff', // default: '#fff'
-  saveInCookies: true, // default: true,
-  label: '🌓', // default: ''
-  autoMatchOsTheme: true // default: true
-}
-
-const darkmode = new Darkmode(options)
-darkmode.showWidget()
 // 替换 baseURL
 axios.defaults.baseURL = 'https://apis.imooc.com/api/'
 // 下面的 icode 值是从慕课网获取的 token 值，可以在课程右侧的项目接口校验码找到
