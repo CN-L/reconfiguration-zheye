@@ -3,9 +3,8 @@ import { createApp } from 'vue'
 import store from '@/store/store'
 import App from './App.vue'
 import router from '@/router/index'
+import { useGlobalStore } from '@/store/global'
 import axios from 'axios'
-// 深色模式
-import Darkmode from 'darkmode-js'
 import 'easymde/dist/easymde.min.css' // css文件
 import { createPinia } from 'pinia'
 // 替换 baseURL
@@ -14,8 +13,10 @@ axios.defaults.baseURL = 'https://apis.imooc.com/api/'
 // Add a request interceptor
 const icode = '4CB97C9D7FB84B63'
 axios.interceptors.request.use(function (config) {
-  store.commit('setLoading', true)
-  store.commit('setError', { status: false, message: '' })
+  globalData.setLoading(true)
+  globalData.setError({ status: false, message: '' })
+  // store.commit('setLoading', true)
+  // store.commit('setError', { status: false, message: '' })
   config.params = { ...config.params, icode }
   if (config.data instanceof FormData) {
     config.data.append('icode', icode)
@@ -30,13 +31,13 @@ axios.interceptors.request.use(function (config) {
 })
 axios.interceptors.response.use(config => {
   setTimeout(() => {
-    store.commit('setLoading', false)
+    globalData.loading = false
   }, 2000)
   return config
 }, e => {
   const { error } = e.response.data
-  store.commit('setError', { status: true, message: error })
-  store.commit('setLoading', false)
+  globalData.setLoading(true)
+  globalData.setError({ status: false, message: error })
   return Promise.reject(error)
 })
 const appPinia = createPinia()
@@ -44,4 +45,5 @@ const app = createApp(App)
 app.use(store)
 app.use(router)
 app.use(appPinia)
+const globalData = useGlobalStore()
 app.mount('#app')

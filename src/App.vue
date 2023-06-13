@@ -1,8 +1,5 @@
 <template>
-  <!-- {{ storeTest.doubleCount }}-{{ storeTest.doubleCountPlusOne }}-->
   <div class="container">
-    <!-- <h1>{{ storeTest.data }}-{{ storeTest.total }}你说</h1> -->
-    <!-- <h3>{{ getDataById('123') }}</h3> -->
     <GlobalHeader :user="currentUser"></GlobalHeader>
     <!-- <Vnode1 msg="我是你爹"></Vnode1> -->
     <router-view v-slot="{ Component }">
@@ -28,6 +25,7 @@ import { GlobalDataProps } from './store/store'
 import createdMessage from '@/hooks/createMessage'
 import Vnode1 from '@/components/Vnode'
 import { storeToRefs } from 'pinia'
+import { useGlobalStore } from '@/store/global'
 import { useRoute } from 'vue-router'
 import { testPosts } from './testData'
 export default defineComponent({
@@ -35,12 +33,13 @@ export default defineComponent({
   setup () {
     const cut = ref(true)
     const storeTest = useTest2Store()
+    const globalStore = useGlobalStore()
     // 将state结构后变成响应式对象
     const { data } = storeToRefs(storeTest)
     const store = useStore<GlobalDataProps>()
     const currentUser = computed(() => store.state.user)
-    const isLoading = computed(() => store.state.loading)
-    const error = computed(() => store.state.error)
+    const isLoading = computed(() => globalStore.loading)
+    const error = computed(() => globalStore.error)
     watch(() => error.value.status, () => {
       const { status, message } = error.value
       if (status && message) {
