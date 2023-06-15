@@ -2,6 +2,7 @@
 import store from '@/store/store'
 import axios from 'axios'
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUsers } from '@/store/user'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -52,11 +53,12 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
   const { user, token } = store.state
+  const userStore = useUsers()
   const { requiredLogin, redirectAlreadyLogin } = to.meta
   if (!user.isLogin) {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
-      store.dispatch('fetchCurrentUser').then(() => {
+      userStore.fetchCurrentUser().then(() => {
         if (redirectAlreadyLogin) {
           next('/')
         } else {

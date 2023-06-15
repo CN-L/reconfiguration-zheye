@@ -25,10 +25,12 @@ import ValidateForm from '@/components/ValidateForm.vue'
 import { useRouter } from 'vue-router'
 import store from '@/store/store'
 import createdMessage from '@/hooks/createMessage'
+import { useUsers } from '@/store/user'
 export default defineComponent({
   name: 'loginView',
   setup () {
     const router = useRouter()
+    const userStore = useUsers()
     const emailVal = ref('111@test.com')
     const passWord = ref('111111')
 
@@ -44,19 +46,18 @@ export default defineComponent({
     const onClear = () => {
       console.log('清空input')
     }
-    const onFormSubmit = (result: boolean) => {
+    const onFormSubmit = async (result: boolean) => {
       if (!result) return // 验证不通过返回
-      const form = {
-        email: emailVal.value,
-        password: passWord.value
-      }
-      store.dispatch('loginAndFetch', form).then(res => {
-        onClear()
+      try {
+        await userStore.login(emailVal.value, passWord.value)
+        await userStore.fetchCurrentUser()
         createdMessage('登陆成功后2秒内跳转首页', 'success')
         setTimeout(() => {
           router.push({ path: '/' })
         }, 2000)
-      }).catch(error => console.log(error))
+      } catch (error) {
+        console.log(error)
+      }
     }
     return {
       emailVal,
