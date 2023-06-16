@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <GlobalHeader :user="currentUser"></GlobalHeader>
+    <GlobalHeader :data="currentUser" :isLogin="isLogin"></GlobalHeader>
     <!-- <Vnode1 msg="我是你爹"></Vnode1> -->
     <router-view v-slot="{ Component }">
       <transition name="fade">
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { useTestStore, useTest2Store } from '@/store/piniaTest'
+import { useTest2Store } from '@/store/piniaTest'
 import { computed, defineComponent, onMounted, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import GlobalHeader from '@/components/GlobalHeader.vue'
@@ -27,17 +27,19 @@ import Vnode1 from '@/components/Vnode'
 import { storeToRefs } from 'pinia'
 import { useGlobalStore } from '@/store/global'
 import { useRoute } from 'vue-router'
-import { testPosts } from './testData'
+import { useUsers } from '@/store/user'
 export default defineComponent({
   name: 'App',
   setup () {
     const cut = ref(true)
+    const userStore = useUsers()
     const storeTest = useTest2Store()
     const globalStore = useGlobalStore()
     // 将state结构后变成响应式对象
     const { data } = storeToRefs(storeTest)
     const store = useStore<GlobalDataProps>()
-    const currentUser = computed(() => store.state.user)
+    const currentUser = computed(() => userStore.data)
+    const isLogin = computed(() => userStore.isLogin)
     const isLoading = computed(() => globalStore.loading)
     const error = computed(() => globalStore.error)
     watch(() => error.value.status, () => {
@@ -81,6 +83,7 @@ export default defineComponent({
     return {
       data,
       cut,
+      isLogin,
       error,
       currentUser,
       storeTest,
