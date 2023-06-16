@@ -56,7 +56,9 @@ export default defineComponent({
           router.push({ path: '/' })
         }, 2000)
       } catch (error) {
-        console.log(error)
+        // console.log(error)
+        // debugger
+        createdMessage(error as string, 'error')
       }
     }
     return {
