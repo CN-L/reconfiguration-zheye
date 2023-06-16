@@ -52,12 +52,12 @@ const router = createRouter({
   ]
 })
 router.beforeEach((to, from, next) => {
-  const { user, token } = store.state
+  // const { user, token } = store.state
   const userStore = useUsers()
   const { requiredLogin, redirectAlreadyLogin } = to.meta
-  if (!user.isLogin) {
-    if (token) {
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+  if (!userStore.isLogin) {
+    if (userStore.token) {
+      axios.defaults.headers.common.Authorization = `Bearer ${userStore.token}`
       userStore.fetchCurrentUser().then(() => {
         if (redirectAlreadyLogin) {
           next('/')
@@ -65,8 +65,7 @@ router.beforeEach((to, from, next) => {
           next()
         }
       }).catch(e => {
-        console.error(e)
-        store.commit('loginOut')
+        userStore.loginOut()
         next('login')
       })
     } else {
