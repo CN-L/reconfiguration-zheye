@@ -10,3 +10,13 @@ export interface ResponseType<P = null> {
   msg: string,
   data: P;
 }
+export interface ListDictType<P> {
+  [id: string]: P
+}
+export interface ListReponse<P> {
+  list: P[];
+  count: number;
+  currentPage: number;
+  pageSize: number
+}
+export type ListResType<P = any> = ListDictType<ListReponse<P>>
