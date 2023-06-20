@@ -25,22 +25,20 @@
 import { defineComponent, computed, onMounted } from 'vue'
 import { useColumnStore } from '@/store/column'
 import ColumnList from '@/components/ColumnList.vue'
-import { useStore } from 'vuex'
-import { GlobalDataProps } from '@/store/store'
+// import { useStore } from 'vuex'
+// import { GlobalDataProps } from '@/store/store'
 import Uploader from '@/components/Uploader.vue'
-import useLoadMore from '@/hooks/useLoadMore'
+import useLoadMore from '@/hooks/useLoadMore2'
 export default defineComponent({
   name: 'homeView',
   setup () {
     const columnStore = useColumnStore()
-    const store = useStore<GlobalDataProps>()
     const list = computed(() => columnStore.getColumn)
-    const total = computed(() => store.state.columns.total)
-    const currentPage = computed(() => store.state.columns.currentPage)
-    const { loadMorePage, isLastPage } = useLoadMore('fetchColumns', total, { pageSize: 3, currentPage: (currentPage.value ? currentPage.value + 1 : 2) })
+    const total = computed(() => columnStore.total)
+    const currentPage = computed(() => columnStore.currentPage)
+    const { loadMorePage, isLastPage } = useLoadMore(columnStore, 'fetchColumns', { total, currentPage, pageSize: 3 })
     onMounted(() => {
       columnStore.fetchColumns({ pageSize: 3 })
-      // store.dispatch('fetchColumns', { pageSize: 3 })
     })
     return {
       list,
