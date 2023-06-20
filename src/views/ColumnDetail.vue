@@ -24,20 +24,22 @@ import { useColumnStore } from '@/store/column'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import PostList from '@/views/PostList.vue'
-import { ColumnProps, GlobalDataProps } from '@/store/store'
+import { GlobalDataProps } from '@/store/store'
 import { useUsers } from '@/store/user'
 import { generateFitUrl, addColumnAvatar } from '@/help'
-import useLoadMore from '@/hooks/useLoadMore'
+import { usePostStore } from '@/store/post'
+import useLoadMore from '@/hooks/useLoadMore2'
 export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const columnStore = useColumnStore()
+    const postStore = usePostStore()
     const userStore = useUsers()
     const router = useRouter()
     const route = useRoute()
     const currentId = computed(() => {
       columnStore.fetchColumn((route.params.id) as string)
-      store.dispatch('fetchPosts', { cid: route.params.id, params: { pageSize: 3 } })
+      postStore.fetchPosts({ cid: (route.params.id) as string })
       return route.params.id
     })
     const column = computed(() => {
@@ -48,11 +50,12 @@ export default defineComponent({
       }
       return selectColumn
     })
-    const list = computed(() => store.getters.getPostsByCid(currentId.value))
-    const count = computed(() => store.getters.getPostsCountByCid(currentId.value))
-    const currentPage = computed(() => store.getters.getPostsCurrentPageByCid(currentId.value))
-    const { loadMorePage, isLastPage } = useLoadMore('fetchPosts', count, { currentPage: currentPage.value, cid: currentId.value })
+    const list = computed(() => postStore.getPostsByCid(currentId.value as string))
+    const count = computed(() => postStore.getPostsCountByCid(currentId.value as string))
+    const currentPage = computed(() => postStore.getPostsCurrentPageByCid(currentId.value as string))
+    const { loadMorePage, isLastPage } = useLoadMore(postStore, 'fetchPosts', { total: count, currentPage: currentPage, cid: currentId.value })
     return {
+      count,
       router,
       loadMorePage,
       isLastPage,

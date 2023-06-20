@@ -67,5 +67,29 @@ export const usePostStore = defineStore('post', {
       const { data } = rowData
       this.data[data._id as string] = data
     }
+  },
+  getters: {
+    getCurrentPost: (state) => (cid: string) => {
+      return state.data[cid]
+    },
+    getPostsCountByCid: (state) => (cid: string) => {
+      if (state.loadedColumn[cid]) {
+        return state.loadedColumn[cid].total
+      } else {
+        return 0
+      }
+    },
+    getPostsCurrentPageByCid: (state) => (cid: string) => {
+      if (state.loadedColumn[cid]) {
+        return state.loadedColumn[cid].currentPage
+      } else {
+        return 0
+      }
+    },
+    getPostsByCid: (state) => (cid: string) => {
+      return objtToArray(state.data).filter(post => post.column === cid).sort((a, b) => {
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      })
+    }
   }
 })
