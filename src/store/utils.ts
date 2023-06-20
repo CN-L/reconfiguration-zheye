@@ -21,6 +21,7 @@ export interface ListReponse<P> {
 }
 export interface ListReqType {
   currentPage?: number;
-  pageSize?: number
+  pageSize?: number;
+  cid?: string
 }
 export type ListResType<P = any> = ListDictType<ListReponse<P>>
