@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import { ImageProps, ResponseType, ListDictType, ListResType } from '@/store/utils'
+import { ImageProps, ResponseType, ListDictType, ListResType, ListReqType } from '@/store/utils'
 import { arrToObjt, objtToArray } from '@/help'
 export interface ColumnsProps {
   _id: string;
@@ -22,7 +22,7 @@ export const useColumnStore = defineStore('column', {
     }
   },
   actions: {
-    async fetchColumns (params: any = {}) {
+    async fetchColumns (params: ListReqType = {}) {
       const { currentPage = 1, pageSize = 6 } = params
       if (this.currentPage < currentPage) {
         const { data } = await axios.get<ListResType<ColumnsProps>>(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`)

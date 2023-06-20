@@ -23,6 +23,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue'
+import { useColumnStore } from '@/store/column'
 import ColumnList from '@/components/ColumnList.vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store/store'
@@ -31,13 +32,15 @@ import useLoadMore from '@/hooks/useLoadMore'
 export default defineComponent({
   name: 'homeView',
   setup () {
+    const columnStore = useColumnStore()
     const store = useStore<GlobalDataProps>()
-    const list = computed(() => store.getters.getColumns)
+    const list = computed(() => columnStore.getColumn)
     const total = computed(() => store.state.columns.total)
     const currentPage = computed(() => store.state.columns.currentPage)
     const { loadMorePage, isLastPage } = useLoadMore('fetchColumns', total, { pageSize: 3, currentPage: (currentPage.value ? currentPage.value + 1 : 2) })
     onMounted(() => {
-      store.dispatch('fetchColumns', { pageSize: 3 })
+      columnStore.fetchColumns({ pageSize: 3 })
+      // store.dispatch('fetchColumns', { pageSize: 3 })
     })
     return {
       list,
